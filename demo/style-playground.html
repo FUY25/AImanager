@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UI Style Playground</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f2f3f5;
+        color: #1b1c1e;
+        font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+      }
+
+      .playground {
+        padding: 24px 20px 48px;
+        display: grid;
+        gap: 22px;
+      }
+
+      .theme {
+        border-radius: 8px;
+        padding: 16px;
+        background: var(--bg);
+        border: 1px solid var(--border-soft);
+        box-shadow: var(--shadow);
+      }
+
+      .theme-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .theme-title {
+        font-family: var(--display);
+        font-size: 17px;
+        letter-spacing: 0.02em;
+        color: var(--text);
+      }
+
+      .theme-note {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .frame {
+        border-radius: 6px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        box-shadow: var(--panel-shadow);
+        overflow: hidden;
+      }
+
+      .frame-top {
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: var(--panel-top);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .brand strong {
+        font-size: 13px;
+        color: var(--text);
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: var(--chip);
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        font-size: 10px;
+        padding: 5px 10px;
+        border-radius: 6px;
+      }
+
+      .btn.primary {
+        background: var(--accent);
+        border-color: transparent;
+        color: var(--accent-contrast);
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 1.1fr 0.6fr;
+        gap: 10px;
+        padding: 12px;
+        background: var(--panel);
+      }
+
+      .doc {
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--paper);
+        padding: 14px;
+        font-family: var(--body);
+        color: var(--text);
+        line-height: 1.55;
+        font-size: 14px;
+        box-shadow: var(--paper-shadow);
+      }
+
+      .doc h3 {
+        margin: 0 0 6px;
+        font-family: var(--display);
+        font-size: 16px;
+      }
+
+      .doc-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 10px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      .chip {
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: var(--chip);
+        border: 1px solid var(--border);
+      }
+
+      .card {
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        padding: 10px;
+        background: var(--panel-alt);
+      }
+
+      .card h4 {
+        margin: 0 0 8px;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .table {
+        display: grid;
+        gap: 6px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1.1fr 0.7fr 0.8fr;
+        gap: 8px;
+        padding: 7px 8px;
+        border-radius: 6px;
+        background: var(--row);
+        border: 1px solid var(--border);
+        font-size: 11px;
+        align-items: center;
+      }
+
+      .row strong {
+        color: var(--text);
+      }
+
+      .pill {
+        font-size: 9px;
+        padding: 3px 6px;
+        border-radius: 999px;
+        background: var(--pill);
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+
+      .avatar {
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 600;
+        background: var(--avatar);
+        color: var(--avatar-text);
+        border: 1px solid var(--border);
+        margin-right: 6px;
+      }
+
+      .mono {
+        font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      .side-chip {
+        margin-top: 8px;
+        font-size: 10px;
+        color: var(--muted);
+        padding: 5px 8px;
+        border-radius: 6px;
+        border: 1px dashed var(--border);
+        background: var(--panel);
+      }
+
+      @media (max-width: 960px) {
+        .content {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Theme 1: Ledger Slate Tight */
+      .ledger-tight {
+        --bg: #f1f1ef;
+        --panel: #f9f8f6;
+        --panel-alt: #f1f0ed;
+        --panel-top: #efeeeb;
+        --paper: #ffffff;
+        --text: #26231f;
+        --muted: #6f675f;
+        --border: #d8d3cd;
+        --border-soft: #e2ddd7;
+        --accent: #33465d;
+        --accent-contrast: #f9f8f6;
+        --chip: #e2dfda;
+        --pill: #e7e4df;
+        --row: #f8f6f2;
+        --avatar: #dfe3ea;
+        --avatar-text: #2f3846;
+        --shadow: 0 10px 20px rgba(60, 60, 60, 0.1);
+        --panel-shadow: 0 8px 14px rgba(60, 60, 60, 0.08);
+        --paper-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        --display: "Bodoni MT", "Didot", "Times New Roman", serif;
+        --body: "Palatino", "Book Antiqua", serif;
+      }
+
+      /* Theme 2: Claude Linear Tight */
+      .claude-tight {
+        --bg: #edf0f3;
+        --panel: #f7f8fa;
+        --panel-alt: #eceff3;
+        --panel-top: #edf0f3;
+        --paper: #ffffff;
+        --text: #1d242c;
+        --muted: #6c7482;
+        --border: #d1d7df;
+        --border-soft: #dee3ea;
+        --accent: #375a9c;
+        --accent-contrast: #f7f8fa;
+        --chip: #e1e6ee;
+        --pill: #e4e9f1;
+        --row: #f6f8fb;
+        --avatar: #e0e7f1;
+        --avatar-text: #2f4a6b;
+        --shadow: 0 10px 22px rgba(45, 59, 86, 0.12);
+        --panel-shadow: 0 8px 14px rgba(45, 59, 86, 0.1);
+        --paper-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        --display: "IBM Plex Sans", "Segoe UI", sans-serif;
+        --body: "IBM Plex Sans", "Segoe UI", sans-serif;
+      }
+
+      /* Theme 3: Artifact Grey Tight */
+      .artifact-tight {
+        --bg: #eef1f4;
+        --panel: #f7f8fa;
+        --panel-alt: #edf0f4;
+        --panel-top: #edf0f4;
+        --paper: #ffffff;
+        --text: #1f242b;
+        --muted: #6a7380;
+        --border: #d3d9e2;
+        --border-soft: #dfe5ee;
+        --accent: #3b6aa5;
+        --accent-contrast: #f7f8fa;
+        --chip: #e2e8f1;
+        --pill: #e4eaf3;
+        --row: #f6f8fb;
+        --avatar: #dfe7f2;
+        --avatar-text: #2f4a6b;
+        --shadow: 0 10px 22px rgba(45, 59, 86, 0.12);
+        --panel-shadow: 0 8px 14px rgba(45, 59, 86, 0.1);
+        --paper-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        --display: "IBM Plex Sans", "Segoe UI", sans-serif;
+        --body: "IBM Plex Sans", "Segoe UI", sans-serif;
+      }
+
+      /* Theme 4: Humanist Utility Tight */
+      .humanist-tight {
+        --bg: #f0f2f5;
+        --panel: #f8f9fb;
+        --panel-alt: #eef1f5;
+        --panel-top: #eef1f5;
+        --paper: #ffffff;
+        --text: #21262c;
+        --muted: #6a7480;
+        --border: #d2d9e2;
+        --border-soft: #dee4ec;
+        --accent: #355f8a;
+        --accent-contrast: #f8f9fb;
+        --chip: #e2e7ef;
+        --pill: #e5eaf2;
+        --row: #f5f7fa;
+        --avatar: #e6ebf2;
+        --avatar-text: #2f4e72;
+        --shadow: 0 10px 22px rgba(45, 59, 86, 0.12);
+        --panel-shadow: 0 8px 14px rgba(45, 59, 86, 0.1);
+        --paper-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        --display: "Libre Franklin", "Segoe UI", sans-serif;
+        --body: "Libre Franklin", "Segoe UI", sans-serif;
+      }
+
+      /* Theme 5: Practical Ink Tight */
+      .ink-tight {
+        --bg: #f2f2f2;
+        --panel: #fafafa;
+        --panel-alt: #f0f0f0;
+        --panel-top: #f1f1f1;
+        --paper: #ffffff;
+        --text: #222222;
+        --muted: #6a6a6a;
+        --border: #d6d6d6;
+        --border-soft: #e0e0e0;
+        --accent: #2c3e57;
+        --accent-contrast: #fdfdfd;
+        --chip: #e6e6e6;
+        --pill: #e9e9e9;
+        --row: #f7f7f7;
+        --avatar: #e1e6ee;
+        --avatar-text: #2b3b52;
+        --shadow: 0 10px 20px rgba(30, 30, 30, 0.08);
+        --panel-shadow: 0 8px 14px rgba(30, 30, 30, 0.06);
+        --paper-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        --display: "Avenir Next", "Segoe UI", sans-serif;
+        --body: "Avenir Next", "Segoe UI", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="playground">
+      <section class="theme ledger-tight">
+        <div class="theme-header">
+          <div class="theme-title">Ledger Slate Tight</div>
+          <div class="theme-note">Notion neutrals + human serif edge.</div>
+        </div>
+        <div class="frame">
+          <div class="frame-top">
+            <div class="brand">
+              <strong>E-commerce Platform Rebuild</strong>
+              <span class="status"><span class="dot"></span>Active</span>
+            </div>
+            <div class="actions">
+              <button class="btn primary">Share</button>
+              <button class="btn">Download</button>
+            </div>
+          </div>
+          <div class="content">
+            <div class="doc">
+              <div class="doc-meta">
+                <span class="chip">Markdown</span>
+                <span class="chip">Owner: Fuyu</span>
+                <span class="chip">Updated Jan 29</span>
+                <span class="mono">/knowledge/session-brief.md</span>
+              </div>
+              <h3>Session Brief</h3>
+              <p>Focus on API reliability and UI consistency. Agents should prioritize tasks with risk flags and unblock database work.</p>
+            </div>
+            <div class="card">
+              <h4>Task Threads</h4>
+              <div class="table">
+                <div class="row">
+                  <div><strong>API Reliability Sweep</strong></div>
+                  <div class="pill">In progress</div>
+                  <div><span class="avatar">C</span>Claude</div>
+                </div>
+                <div class="row">
+                  <div><strong>Database Schema Review</strong></div>
+                  <div class="pill">Blocked</div>
+                  <div><span class="avatar">D</span>Codex</div>
+                </div>
+              </div>
+              <div class="side-chip">2 blocked items need attention</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="theme claude-tight">
+        <div class="theme-header">
+          <div class="theme-title">Claude Linear Tight</div>
+          <div class="theme-note">Claude artifact vibe + Linear blue anchor.</div>
+        </div>
+        <div class="frame">
+          <div class="frame-top">
+            <div class="brand">
+              <strong>E-commerce Platform Rebuild</strong>
+              <span class="status"><span class="dot"></span>Active</span>
+            </div>
+            <div class="actions">
+              <button class="btn primary">Share</button>
+              <button class="btn">Download</button>
+            </div>
+          </div>
+          <div class="content">
+            <div class="doc">
+              <div class="doc-meta">
+                <span class="chip">Artifact</span>
+                <span class="chip">Owner: Fuyu</span>
+                <span class="chip">Updated Jan 29</span>
+                <span class="mono">/docs/session-brief.md</span>
+              </div>
+              <h3>Execution Notes</h3>
+              <p>High-level task threads (3-30 minutes) keep the team aligned. Capture learnings after each cycle.</p>
+            </div>
+            <div class="card">
+              <h4>Task Threads</h4>
+              <div class="table">
+                <div class="row">
+                  <div><strong>Auth Flow Tightening</strong></div>
+                  <div class="pill">In progress</div>
+                  <div><span class="avatar">G</span>Gemini</div>
+                </div>
+                <div class="row">
+                  <div><strong>Load Testing Pass</strong></div>
+                  <div class="pill">Queued</div>
+                  <div><span class="avatar">U</span>Cursor</div>
+                </div>
+              </div>
+              <div class="side-chip">Next handoff at 16:00</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="theme artifact-tight">
+        <div class="theme-header">
+          <div class="theme-title">Artifact Grey Tight</div>
+          <div class="theme-note">More UI density, calmer paper.</div>
+        </div>
+        <div class="frame">
+          <div class="frame-top">
+            <div class="brand">
+              <strong>E-commerce Platform Rebuild</strong>
+              <span class="status"><span class="dot"></span>Active</span>
+            </div>
+            <div class="actions">
+              <button class="btn primary">Share</button>
+              <button class="btn">Download</button>
+            </div>
+          </div>
+          <div class="content">
+            <div class="doc">
+              <div class="doc-meta">
+                <span class="chip">Session brief</span>
+                <span class="chip">Owner: Fuyu</span>
+                <span class="chip">Updated Jan 29</span>
+                <span class="mono">/project/briefs/01.md</span>
+              </div>
+              <h3>Artifact Notes</h3>
+              <p>Bring clarity to the auth decisions. Update docs for agents at the end of each loop.</p>
+            </div>
+            <div class="card">
+              <h4>Task Threads</h4>
+              <div class="table">
+                <div class="row">
+                  <div><strong>OAuth Checklist</strong></div>
+                  <div class="pill">Done</div>
+                  <div><span class="avatar">M</span>Mika</div>
+                </div>
+                <div class="row">
+                  <div><strong>API Protection Audit</strong></div>
+                  <div class="pill">Blocked</div>
+                  <div><span class="avatar">D</span>Codex</div>
+                </div>
+              </div>
+              <div class="side-chip">Review due by end of day</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="theme humanist-tight">
+        <div class="theme-header">
+          <div class="theme-title">Humanist Utility Tight</div>
+          <div class="theme-note">Practical, quieter, still human.</div>
+        </div>
+        <div class="frame">
+          <div class="frame-top">
+            <div class="brand">
+              <strong>E-commerce Platform Rebuild</strong>
+              <span class="status"><span class="dot"></span>Active</span>
+            </div>
+            <div class="actions">
+              <button class="btn primary">Share</button>
+              <button class="btn">Download</button>
+            </div>
+          </div>
+          <div class="content">
+            <div class="doc">
+              <div class="doc-meta">
+                <span class="chip">Project doc</span>
+                <span class="chip">Owner: Fuyu</span>
+                <span class="chip">Updated Jan 29</span>
+                <span class="mono">/notes/project.md</span>
+              </div>
+              <h3>Team Brief</h3>
+              <p>Keep task threads visible to all agents. Use the knowledge log to record decisions.</p>
+            </div>
+            <div class="card">
+              <h4>Task Threads</h4>
+              <div class="table">
+                <div class="row">
+                  <div><strong>Design System Sweep</strong></div>
+                  <div class="pill">In progress</div>
+                  <div><span class="avatar">C</span>Claude</div>
+                </div>
+                <div class="row">
+                  <div><strong>Performance Pass</strong></div>
+                  <div class="pill">Queued</div>
+                  <div><span class="avatar">G</span>Gemini</div>
+                </div>
+              </div>
+              <div class="side-chip">3 threads ready for review</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="theme ink-tight">
+        <div class="theme-header">
+          <div class="theme-title">Practical Ink Tight</div>
+          <div class="theme-note">Clean, compact, no fluff.</div>
+        </div>
+        <div class="frame">
+          <div class="frame-top">
+            <div class="brand">
+              <strong>E-commerce Platform Rebuild</strong>
+              <span class="status"><span class="dot"></span>Active</span>
+            </div>
+            <div class="actions">
+              <button class="btn primary">Share</button>
+              <button class="btn">Download</button>
+            </div>
+          </div>
+          <div class="content">
+            <div class="doc">
+              <div class="doc-meta">
+                <span class="chip">Session brief</span>
+                <span class="chip">Owner: Fuyu</span>
+                <span class="chip">Updated Jan 29</span>
+                <span class="mono">/ops/briefs/09.md</span>
+              </div>
+              <h3>Focus Window</h3>
+              <p>Track high-level task threads and keep the team aligned on blockers. Update the dashboard at handoff.</p>
+            </div>
+            <div class="card">
+              <h4>Task Threads</h4>
+              <div class="table">
+                <div class="row">
+                  <div><strong>Login Flow QA</strong></div>
+                  <div class="pill">Needs review</div>
+                  <div><span class="avatar">U</span>Cursor</div>
+                </div>
+                <div class="row">
+                  <div><strong>Database Sync</strong></div>
+                  <div class="pill">Blocked</div>
+                  <div><span class="avatar">D</span>Codex</div>
+                </div>
+              </div>
+              <div class="side-chip">Next sync in 2 hours</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Avatar Layout Playground</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f1f1ef;
+        --panel: #f9f8f6;
+        --panel-muted: #f1f0ed;
+        --border: #d8d3cd;
+        --text: #26231f;
+        --muted: #6f675f;
+        --accent: #33465d;
+        --success: #2f7d4b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .wrap {
+        padding: 24px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px;
+        box-shadow: 0 10px 18px rgba(60, 60, 60, 0.08);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .title {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #ece7e1;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 10px 18px rgba(40, 35, 28, 0.18);
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .ring {
+        position: relative;
+      }
+
+      .ring::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(51, 70, 93, 0.45), rgba(51, 70, 93, 0.08));
+        z-index: -1;
+      }
+
+      .size-md { width: 44px; height: 44px; }
+      .size-lg { width: 62px; height: 62px; }
+      .size-xl { width: 78px; height: 78px; }
+
+      .badge {
+        font-size: 10px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--panel-muted);
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .chip {
+        font-size: 10px;
+        padding: 3px 6px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--panel-muted);
+        color: var(--muted);
+      }
+
+      .label {
+        font-size: 17px;
+        font-weight: 600;
+      }
+
+      .subtext {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .presence {
+        position: relative;
+      }
+
+      .presence-dot {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        background: var(--success);
+        border: 2px solid var(--panel);
+        box-shadow: 0 0 0 4px rgba(47, 125, 75, 0.15);
+      }
+
+      .sidebar-tile {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 6px;
+        background: var(--panel-muted);
+        border: 1px solid var(--border);
+      }
+
+      .timeline {
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .timeline-line {
+        position: relative;
+      }
+
+      .timeline-line::before {
+        content: "";
+        position: absolute;
+        left: 22px;
+        top: 52px;
+        bottom: -8px;
+        width: 1px;
+        background: var(--border);
+      }
+
+      .file-row {
+        display: grid;
+        grid-template-columns: 1.4fr 0.7fr 0.7fr 0.8fr;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 6px;
+        background: var(--panel-muted);
+        border: 1px solid var(--border);
+      }
+
+      .mini-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 6px 12px rgba(40, 35, 28, 0.14);
+      }
+
+      .mini-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .name-stack {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .mono {
+        font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      .shadow-slice {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, rgba(51, 70, 93, 0.06), transparent 60%);
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <div class="title">Type 1 · Presence hero (larger text, refined)</div>
+        <div class="row">
+          <div class="presence">
+            <span class="avatar size-xl ring"><img src="public/avatars/agent-3.png" alt="" /></span>
+            <span class="presence-dot"></span>
+          </div>
+          <div>
+            <div class="label">Codex GPT-4</div>
+            <div class="subtext">Database · Active · 1 blocker</div>
+            <div class="chip-row">
+              <span class="chip">Latency check</span>
+              <span class="chip">Schema review</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Type 2 · Apprenticeship card (warm, practical)</div>
+        <div class="sidebar-tile">
+          <span class="avatar size-lg ring"><img src="public/avatars/agent-1.png" alt="" /></span>
+          <div>
+            <div class="label">Frontend Specialist</div>
+            <div class="subtext">UI polish · Ask before final pass</div>
+            <div class="chip-row">
+              <span class="chip">React</span>
+              <span class="chip">A11y</span>
+              <span class="chip">Design QA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Type 3 · Inbox item (calm, readable)</div>
+        <div class="row">
+          <span class="avatar size-lg"><img src="public/avatars/agent-2.png" alt="" /></span>
+          <div style="flex: 1;">
+            <div class="label">Gemini Pro 2.0</div>
+            <div class="subtext">Shared an update: “API coverage now 75%.”</div>
+          </div>
+          <span class="badge">5m ago</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Type 4 · Recent update timeline (editorial)</div>
+        <div class="timeline">
+          <div class="timeline-line">
+            <span class="avatar size-md ring"><img src="public/avatars/agent-4.png" alt="" /></span>
+          </div>
+          <div>
+            <div class="label">OAuth integration merged</div>
+            <div class="subtext">Claude · 2 files changed · 2 hours ago</div>
+            <div class="chip-row">
+              <span class="chip">server/oauth/google.ts</span>
+              <span class="chip">server/oauth/github.ts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Type 5 · File system row (modified by)</div>
+        <div class="file-row">
+          <div>
+            <div class="label" style="font-size: 15px;">session-brief.md</div>
+            <div class="mono">/knowledge/session-brief.md</div>
+          </div>
+          <div class="subtext">Markdown</div>
+          <div class="subtext">Jan 29, 2026</div>
+          <div class="name-stack">
+            <span class="mini-avatar"><img src="public/avatars/agent-1.png" alt="" /></span>
+            <span class="subtext">Fuyu</span>
+          </div>
+        </div>
+        <div class="shadow-slice"></div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notion-Inspired Type Scale Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f1ef;
+      --panel: #f9f8f6;
+      --border: #d8d3cd;
+      --text: #26231f;
+      --text-secondary: #5f5952;
+      --text-tertiary: #756e66;
+      --accent: #33465d;
+      --shadow: 0 12px 24px rgba(43, 40, 35, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 32px auto 56px;
+      padding: 0 24px;
+    }
+
+    .header h1 {
+      font-family: 'Bodoni MT', 'Didot', 'Times New Roman', serif;
+      font-weight: 600;
+      margin: 0 0 8px;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-family: 'Bodoni MT', 'Didot', 'Times New Roman', serif;
+      margin: 0 0 4px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+
+    .meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--text-tertiary);
+    }
+
+    .pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(51, 70, 93, 0.2);
+      color: var(--accent);
+      background: rgba(51, 70, 93, 0.08);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .body {
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .option-a { --h1: 30px; --h1-lh: 38px; --meta: 12px; --pill: 11px; --body: 13.5px; }
+    .option-b { --h1: 28px; --h1-lh: 36px; --meta: 12.5px; --pill: 11.5px; --body: 14px; }
+    .option-c { --h1: 26px; --h1-lh: 34px; --meta: 12px; --pill: 10.5px; --body: 13px; }
+    .option-d { --h1: 28px; --h1-lh: 34px; --meta: 11.5px; --pill: 11px; --body: 13.5px; }
+    .option-e { --h1: 29px; --h1-lh: 36px; --meta: 12px; --pill: 11px; --body: 14px; }
+
+    .card .title { font-size: var(--h1); line-height: var(--h1-lh); }
+    .card .meta { font-size: var(--meta); }
+    .card .pill { font-size: var(--pill); }
+    .card .body { font-size: var(--body); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>Notion‑Inspired Typography Tests</h1>
+      <p>Pick the font scale and metadata style that feels closest to the Notion screenshot.</p>
+    </div>
+
+    <div class="grid">
+      <section class="card option-a">
+        <div class="label">Option 1 · Calm Serif</div>
+        <h2 class="title">Teacher onboarding</h2>
+        <div class="meta">
+          <span>Shared with workspace</span>
+          <span class="dot"></span>
+          <span>Add description</span>
+        </div>
+        <div class="pills">
+          <span class="pill">Notes</span>
+          <span class="pill">Files</span>
+        </div>
+        <div class="body">Lightweight metadata, comfortable serif title, and quiet pill labels.</div>
+      </section>
+
+      <section class="card option-b">
+        <div class="label">Option 2 · Balanced Compact</div>
+        <h2 class="title">Teacher onboarding</h2>
+        <div class="meta">
+          <span>Shared with workspace</span>
+          <span class="dot"></span>
+          <span>Add description</span>
+        </div>
+        <div class="pills">
+          <span class="pill">Notes</span>
+          <span class="pill">Files</span>
+        </div>
+        <div class="body">Slightly smaller H1 with a tighter metadata line for density.</div>
+      </section>
+
+      <section class="card option-c">
+        <div class="label">Option 3 · Tight & Quiet</div>
+        <h2 class="title">Teacher onboarding</h2>
+        <div class="meta">
+          <span>Shared with workspace</span>
+          <span class="dot"></span>
+          <span>Add description</span>
+        </div>
+        <div class="pills">
+          <span class="pill">Notes</span>
+          <span class="pill">Files</span>
+        </div>
+        <div class="body">Smallest scale; cleanest information hierarchy.</div>
+      </section>
+
+      <section class="card option-d">
+        <div class="label">Option 4 · Editorial Thin</div>
+        <h2 class="title">Teacher onboarding</h2>
+        <div class="meta">
+          <span>Shared with workspace</span>
+          <span class="dot"></span>
+          <span>Add description</span>
+        </div>
+        <div class="pills">
+          <span class="pill">Notes</span>
+          <span class="pill">Files</span>
+        </div>
+        <div class="body">Shorter line‑height and more airy subtitle spacing.</div>
+      </section>
+
+      <section class="card option-e">
+        <div class="label">Option 5 · Confident Title</div>
+        <h2 class="title">Teacher onboarding</h2>
+        <div class="meta">
+          <span>Shared with workspace</span>
+          <span class="dot"></span>
+          <span>Add description</span>
+        </div>
+        <div class="pills">
+          <span class="pill">Notes</span>
+          <span class="pill">Files</span>
+        </div>
+        <div class="body">Slightly bigger title but keeps metadata at 12px.</div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kanban UI Playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #efefed;
+        --panel: #f7f6f3;
+        --panel-muted: #f0eeeb;
+        --border: #d7d1c9;
+        --text: #26231f;
+        --muted: #6f675f;
+        --accent: #2f4156;
+        --success: #2f7d4b;
+        --warning: #ad7b2f;
+        --error: #c1463f;
+        --review: #3d5b7e;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 28px 24px 60px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+
+      .header h1 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 600;
+      }
+
+      .header p {
+        margin: 6px 0 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .mono {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 18px 18px;
+        box-shadow: 0 12px 24px rgba(40, 35, 28, 0.08);
+      }
+
+      .title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(180px, 1fr));
+        gap: 14px;
+      }
+
+      .lane {
+        background: var(--panel-muted);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px;
+        display: grid;
+        gap: 10px;
+        min-height: 300px;
+      }
+
+      .lane-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        min-height: 34px;
+      }
+
+      .lane-title {
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+
+      .count {
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #fbfaf8;
+        color: var(--muted);
+      }
+
+      .card-item {
+        background: #fbfaf8;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        display: grid;
+        gap: 8px;
+        box-shadow: 0 10px 18px rgba(40, 35, 28, 0.08);
+      }
+
+      .meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .meta-id {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-weight: 500;
+      }
+
+      .meta-pill {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #f6f4f0;
+      }
+
+      .card-title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .card-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      .card-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .foot-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 10px 18px rgba(40, 35, 28, 0.18);
+      }
+
+      .avatar::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(47, 65, 86, 0.45), rgba(47, 65, 86, 0.08));
+        z-index: -1;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .presence {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--success);
+        border: 2px solid #fbfaf8;
+        box-shadow: 0 0 0 3px rgba(47, 125, 75, 0.15);
+      }
+
+      .progress {
+        height: 6px;
+        border-radius: 999px;
+        background: #ebe7e1;
+        overflow: hidden;
+      }
+
+      .progress span {
+        display: block;
+        height: 100%;
+        background: var(--accent);
+      }
+
+      .chip {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #f6f4f0;
+        color: var(--muted);
+      }
+
+      .tone-todo { --tone: #9a9892; --tone-bg: #efede9; }
+      .tone-progress { --tone: #2f4156; --tone-bg: #e6edf4; }
+      .tone-review { --tone: #3d5b7e; --tone-bg: #e2e9f1; }
+      .tone-done { --tone: #2f7d4b; --tone-bg: #e2f2e8; }
+      .tone-cancel { --tone: #c1463f; --tone-bg: #f5e4e2; }
+
+      .lane.tint {
+        background: var(--tone-bg);
+        border-color: color-mix(in srgb, var(--tone) 20%, var(--border));
+      }
+
+      .lane.accented {
+        border-top: 3px solid var(--tone);
+      }
+
+      .lane.soft {
+        background: linear-gradient(180deg, color-mix(in srgb, var(--tone) 12%, #fbfaf8), #f4f2ef);
+      }
+
+      .lane.frame {
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 15%, transparent);
+      }
+
+      .lane.header-band .lane-header {
+        background: color-mix(in srgb, var(--tone) 12%, #f6f4f0);
+        padding: 6px 8px;
+        border-radius: 8px;
+      }
+
+      .card-item.striped {
+        border-left: 3px solid var(--tone);
+      }
+
+      .card-item.flat {
+        box-shadow: none;
+        background: #fdfbf8;
+      }
+
+      .card-item.elevated {
+        box-shadow: 0 12px 22px rgba(40, 35, 28, 0.12);
+      }
+
+      .card-item.tight {
+        padding: 10px;
+      }
+
+      .legend {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <div>
+          <h1>Kanban UI Playground</h1>
+          <p>Five variations based on Style 1, with current card info layout.</p>
+        </div>
+        <div class="mono">Ledger Slate Tight v2</div>
+      </div>
+
+      <div class="card">
+        <div class="title">1 · Tinted lanes, balanced cards</div>
+        <div class="board">
+          <div class="lane tint tone-todo">
+            <div class="lane-header">
+              <div class="lane-title">To do</div>
+              <span class="count">3</span>
+            </div>
+            <div class="card-item">
+              <div class="meta-row">
+                <span class="meta-id">#24</span>
+                <span class="meta-pill">spec</span>
+              </div>
+              <div class="card-title">Edge-case audit</div>
+              <div class="card-desc">Document auth edge cases and update the flow diagram.</div>
+              <div class="card-foot">
+                <div class="foot-left">
+                  <span>2 deps</span>
+                  <span class="chip">needs review</span>
+                </div>
+                <div class="avatar">
+                  <img src="public/avatars/agent-1.png" alt="" />
+                  <span class="presence"></span>
+                </div>
+              </div>
+              <div class="progress"><span style="width: 20%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint tone-progress">
+            <div class="lane-header">
+              <div class="lane-title">In progress</div>
+              <span class="count">2</span>
+            </div>
+            <div class="card-item">
+              <div class="meta-row">
+                <span class="meta-id">#17</span>
+                <span class="meta-pill">api</span>
+              </div>
+              <div class="card-title">Schema migration</div>
+              <div class="card-desc">Finalize SQL changes for the user profile table.</div>
+              <div class="card-foot">
+                <div class="foot-left">
+                  <span>blocks #22</span>
+                </div>
+                <div class="avatar"><img src="public/avatars/agent-3.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 54%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint tone-review">
+            <div class="lane-header">
+              <div class="lane-title">Review</div>
+              <span class="count">1</span>
+            </div>
+            <div class="card-item">
+              <div class="meta-row">
+                <span class="meta-id">#19</span>
+                <span class="meta-pill">qa</span>
+              </div>
+              <div class="card-title">QA sign-off</div>
+              <div class="card-desc">Verify coverage and confirm pass rate on tests.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>1 dep</span></div>
+                <div class="avatar"><img src="public/avatars/agent-2.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 76%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint tone-done">
+            <div class="lane-header">
+              <div class="lane-title">Done</div>
+              <span class="count">4</span>
+            </div>
+            <div class="card-item">
+              <div class="meta-row">
+                <span class="meta-id">#11</span>
+                <span class="meta-pill">docs</span>
+              </div>
+              <div class="card-title">Incident summary</div>
+              <div class="card-desc">Share the postmortem and archive the report.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>shipped</span></div>
+                <div class="avatar"><img src="public/avatars/agent-4.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 100%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint tone-cancel">
+            <div class="lane-header">
+              <div class="lane-title">Canceled</div>
+              <span class="count">1</span>
+            </div>
+            <div class="card-item">
+              <div class="meta-row">
+                <span class="meta-id">#03</span>
+                <span class="meta-pill">legacy</span>
+              </div>
+              <div class="card-title">Legacy pipeline</div>
+              <div class="card-desc">Deprecated after new import system landed.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>closed</span></div>
+                <div class="avatar"><img src="public/avatars/agent-3.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 0%;"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">2 · Tinted lanes + accent header bands</div>
+        <div class="board">
+          <div class="lane tint header-band tone-todo">
+            <div class="lane-header">
+              <div class="lane-title">To do</div>
+              <span class="count">2</span>
+            </div>
+            <div class="card-item elevated">
+              <div class="meta-row"><span class="meta-id">#31</span><span class="meta-pill">spec</span></div>
+              <div class="card-title">Auth copy edit</div>
+              <div class="card-desc">Rewrite onboarding copy and update empty states.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>2 deps</span></div>
+                <div class="avatar"><img src="public/avatars/agent-4.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 15%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint header-band tone-progress">
+            <div class="lane-header"><div class="lane-title">In progress</div><span class="count">3</span></div>
+            <div class="card-item elevated">
+              <div class="meta-row"><span class="meta-id">#22</span><span class="meta-pill">api</span></div>
+              <div class="card-title">SLA tuning</div>
+              <div class="card-desc">Improve cold start response and cache warmup.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>blocks #34</span></div>
+                <div class="avatar"><img src="public/avatars/agent-1.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 62%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint header-band tone-review">
+            <div class="lane-header"><div class="lane-title">Review</div><span class="count">1</span></div>
+            <div class="card-item elevated">
+              <div class="meta-row"><span class="meta-id">#29</span><span class="meta-pill">qa</span></div>
+              <div class="card-title">Test matrix</div>
+              <div class="card-desc">Confirm coverage for edge-case regressions.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>needs review</span></div>
+                <div class="avatar"><img src="public/avatars/agent-2.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 86%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint header-band tone-done">
+            <div class="lane-header"><div class="lane-title">Done</div><span class="count">5</span></div>
+            <div class="card-item elevated">
+              <div class="meta-row"><span class="meta-id">#08</span><span class="meta-pill">ops</span></div>
+              <div class="card-title">Load harness</div>
+              <div class="card-desc">Baseline throughput and publish the benchmark.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>shipped</span></div>
+                <div class="avatar"><img src="public/avatars/agent-3.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 100%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint header-band tone-cancel">
+            <div class="lane-header"><div class="lane-title">Canceled</div><span class="count">1</span></div>
+            <div class="card-item elevated">
+              <div class="meta-row"><span class="meta-id">#05</span><span class="meta-pill">legacy</span></div>
+              <div class="card-title">Deprecated endpoint</div>
+              <div class="card-desc">Swapped to the new aggregation service.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>closed</span></div>
+                <div class="avatar"><img src="public/avatars/agent-4.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 0%;"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">3 · Soft tint lanes + striped cards</div>
+        <div class="board">
+          <div class="lane tint soft tone-todo">
+            <div class="lane-header"><div class="lane-title">To do</div><span class="count">4</span></div>
+            <div class="card-item striped tone-todo">
+              <div class="meta-row"><span class="meta-id">#13</span><span class="meta-pill">spec</span></div>
+              <div class="card-title">Alert triage</div>
+              <div class="card-desc">Sort incoming alerts and update severity tags.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>1 dep</span></div>
+                <div class="avatar"><img src="public/avatars/agent-2.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 30%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint soft tone-progress">
+            <div class="lane-header"><div class="lane-title">In progress</div><span class="count">2</span></div>
+            <div class="card-item striped tone-progress">
+              <div class="meta-row"><span class="meta-id">#18</span><span class="meta-pill">api</span></div>
+              <div class="card-title">Migration script</div>
+              <div class="card-desc">Confirm rollback strategy and final migration.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>blocks #21</span></div>
+                <div class="avatar"><img src="public/avatars/agent-3.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 58%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint soft tone-review">
+            <div class="lane-header"><div class="lane-title">Review</div><span class="count">1</span></div>
+            <div class="card-item striped tone-review">
+              <div class="meta-row"><span class="meta-id">#27</span><span class="meta-pill">qa</span></div>
+              <div class="card-title">Design QA</div>
+              <div class="card-desc">Check spacing, edge cases, and task states.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>needs review</span></div>
+                <div class="avatar"><img src="public/avatars/agent-1.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 74%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint soft tone-done">
+            <div class="lane-header"><div class="lane-title">Done</div><span class="count">6</span></div>
+            <div class="card-item striped tone-done">
+              <div class="meta-row"><span class="meta-id">#06</span><span class="meta-pill">ops</span></div>
+              <div class="card-title">Cache priming</div>
+              <div class="card-desc">Auto-warm caches during deploy window.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>shipped</span></div>
+                <div class="avatar"><img src="public/avatars/agent-4.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 100%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint soft tone-cancel">
+            <div class="lane-header"><div class="lane-title">Canceled</div><span class="count">1</span></div>
+            <div class="card-item striped tone-cancel">
+              <div class="meta-row"><span class="meta-id">#02</span><span class="meta-pill">legacy</span></div>
+              <div class="card-title">Old import tool</div>
+              <div class="card-desc">Replaced by unified pipeline and removed.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>closed</span></div>
+                <div class="avatar"><img src="public/avatars/agent-2.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 0%;"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">4 · Tinted lanes + framed cards</div>
+        <div class="board">
+          <div class="lane tint frame tone-todo">
+            <div class="lane-header"><div class="lane-title">To do</div><span class="count">2</span></div>
+            <div class="card-item flat">
+              <div class="meta-row"><span class="meta-id">#38</span><span class="meta-pill">spec</span></div>
+              <div class="card-title">Policy review</div>
+              <div class="card-desc">Map exceptions and confirm data policy usage.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>1 dep</span></div>
+                <div class="avatar"><img src="public/avatars/agent-3.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 10%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint frame tone-progress">
+            <div class="lane-header"><div class="lane-title">In progress</div><span class="count">2</span></div>
+            <div class="card-item flat">
+              <div class="meta-row"><span class="meta-id">#41</span><span class="meta-pill">ui</span></div>
+              <div class="card-title">UI audit</div>
+              <div class="card-desc">Inspect component spacing and typography.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>blocks #45</span></div>
+                <div class="avatar"><img src="public/avatars/agent-1.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 47%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint frame tone-review">
+            <div class="lane-header"><div class="lane-title">Review</div><span class="count">1</span></div>
+            <div class="card-item flat">
+              <div class="meta-row"><span class="meta-id">#44</span><span class="meta-pill">qa</span></div>
+              <div class="card-title">Test sign-off</div>
+              <div class="card-desc">Approve pass rate and finalize release notes.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>needs review</span></div>
+                <div class="avatar"><img src="public/avatars/agent-2.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 88%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint frame tone-done">
+            <div class="lane-header"><div class="lane-title">Done</div><span class="count">3</span></div>
+            <div class="card-item flat">
+              <div class="meta-row"><span class="meta-id">#12</span><span class="meta-pill">ops</span></div>
+              <div class="card-title">Release notes</div>
+              <div class="card-desc">Published notes for the February build.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>shipped</span></div>
+                <div class="avatar"><img src="public/avatars/agent-4.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 100%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint frame tone-cancel">
+            <div class="lane-header"><div class="lane-title">Canceled</div><span class="count">1</span></div>
+            <div class="card-item flat">
+              <div class="meta-row"><span class="meta-id">#01</span><span class="meta-pill">legacy</span></div>
+              <div class="card-title">Old metric</div>
+              <div class="card-desc">Removed after analytics consolidation.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>closed</span></div>
+                <div class="avatar"><img src="public/avatars/agent-1.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 0%;"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">5 · Tinted lanes + tighter cards</div>
+        <div class="board">
+          <div class="lane tint tone-todo">
+            <div class="lane-header"><div class="lane-title">To do</div><span class="count">1</span></div>
+            <div class="card-item tight">
+              <div class="meta-row"><span class="meta-id">#55</span><span class="meta-pill">spec</span></div>
+              <div class="card-title">Doc cleanup</div>
+              <div class="card-desc">Consolidate redundant docs and archive old notes.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>1 dep</span></div>
+                <div class="avatar"><img src="public/avatars/agent-2.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 25%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint tone-progress">
+            <div class="lane-header"><div class="lane-title">In progress</div><span class="count">2</span></div>
+            <div class="card-item tight">
+              <div class="meta-row"><span class="meta-id">#61</span><span class="meta-pill">api</span></div>
+              <div class="card-title">Latency test</div>
+              <div class="card-desc">Profile response times and tune caching.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>blocks #63</span></div>
+                <div class="avatar"><img src="public/avatars/agent-3.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 52%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint tone-review">
+            <div class="lane-header"><div class="lane-title">Review</div><span class="count">2</span></div>
+            <div class="card-item tight">
+              <div class="meta-row"><span class="meta-id">#67</span><span class="meta-pill">qa</span></div>
+              <div class="card-title">QA checklist</div>
+              <div class="card-desc">Validate final passes before release.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>needs review</span></div>
+                <div class="avatar"><img src="public/avatars/agent-1.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 82%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint tone-done">
+            <div class="lane-header"><div class="lane-title">Done</div><span class="count">4</span></div>
+            <div class="card-item tight">
+              <div class="meta-row"><span class="meta-id">#70</span><span class="meta-pill">ops</span></div>
+              <div class="card-title">Webhook fix</div>
+              <div class="card-desc">Patched webhook retries and added monitoring.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>shipped</span></div>
+                <div class="avatar"><img src="public/avatars/agent-4.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 100%;"></span></div>
+            </div>
+          </div>
+          <div class="lane tint tone-cancel">
+            <div class="lane-header"><div class="lane-title">Canceled</div><span class="count">1</span></div>
+            <div class="card-item tight">
+              <div class="meta-row"><span class="meta-id">#72</span><span class="meta-pill">legacy</span></div>
+              <div class="card-title">Legacy export</div>
+              <div class="card-desc">Removed after new export service shipped.</div>
+              <div class="card-foot">
+                <div class="foot-left"><span>closed</span></div>
+                <div class="avatar"><img src="public/avatars/agent-2.png" alt="" /></div>
+              </div>
+              <div class="progress"><span style="width: 0%;"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Status UI Playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #efefed;
+        --panel: #f8f7f4;
+        --panel-muted: #f0eeeb;
+        --border: #d7d1c9;
+        --text: #26231f;
+        --muted: #6f675f;
+        --accent: #2f4156;
+        --success: #2f7d4b;
+        --warning: #ad7b2f;
+        --error: #c1463f;
+        --idle: #9a9892;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 28px 24px 60px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+
+      .header h1 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 600;
+      }
+
+      .header p {
+        margin: 6px 0 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px 18px 18px;
+        box-shadow: 0 12px 24px rgba(40, 35, 28, 0.08);
+      }
+
+      .title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      .table {
+        display: grid;
+        gap: 10px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 160px 1fr 120px;
+        gap: 16px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--panel-muted);
+      }
+
+      .task {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      .meta {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .mono {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .status-col {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .checkbox {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+        background: #f8f6f2;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .checkbox.checked {
+        border-color: rgba(47, 125, 75, 0.4);
+        background: rgba(47, 125, 75, 0.14);
+      }
+
+      .checkbox.checked::after {
+        content: "";
+        width: 7px;
+        height: 4px;
+        border-left: 2px solid var(--success);
+        border-bottom: 2px solid var(--success);
+        transform: rotate(-45deg);
+        margin-top: -1px;
+      }
+
+      .checkbox.partial {
+        border-color: rgba(47, 65, 86, 0.5);
+        background: rgba(47, 65, 86, 0.12);
+      }
+
+      .checkbox.partial::after {
+        content: "";
+        width: 8px;
+        height: 2px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+
+      .lozenge {
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #fbfaf8;
+        color: var(--text);
+      }
+
+      .lozenge.done {
+        border-color: rgba(47, 125, 75, 0.35);
+        color: var(--success);
+      }
+
+      .lozenge.progress {
+        border-color: rgba(47, 65, 86, 0.3);
+        color: var(--accent);
+      }
+
+      .lozenge.blocked {
+        border-color: rgba(193, 70, 63, 0.3);
+        color: var(--error);
+      }
+
+      .indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--idle);
+        box-shadow: 0 0 0 4px rgba(154, 152, 146, 0.15);
+      }
+
+      .indicator.done {
+        background: var(--success);
+        box-shadow: 0 0 0 4px rgba(47, 125, 75, 0.15);
+      }
+
+      .indicator.progress {
+        background: var(--accent);
+        box-shadow: 0 0 0 4px rgba(47, 65, 86, 0.15);
+      }
+
+      .indicator.blocked {
+        background: var(--error);
+        box-shadow: 0 0 0 4px rgba(193, 70, 63, 0.12);
+      }
+
+      .tag {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+      }
+
+      .hybrid {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .tag-mini {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #fbfaf8;
+        color: var(--muted);
+      }
+
+      .tag-mini.blocked {
+        color: var(--error);
+        border-color: rgba(193, 70, 63, 0.3);
+      }
+
+      .tag-mini.progress {
+        color: var(--accent);
+        border-color: rgba(47, 65, 86, 0.35);
+      }
+
+      .tag-mini.done {
+        color: var(--success);
+        border-color: rgba(47, 125, 75, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <div>
+          <h1>Status UI Playground</h1>
+          <p>Pick a direction and I’ll implement it in the app.</p>
+        </div>
+        <div class="mono">Ledger Slate Tight · v1</div>
+      </div>
+
+      <div class="card">
+        <div class="title">1 · Notion-style checkbox + label</div>
+        <div class="table">
+          <div class="row">
+            <div class="status-col">
+              <span class="checkbox"></span>
+              <span class="tag">To do</span>
+            </div>
+            <div>
+              <div class="task">Define auth edge cases</div>
+              <div class="meta">Claude · 3 files changed</div>
+            </div>
+            <div class="mono">Feb 1</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <span class="checkbox partial"></span>
+              <span class="tag">In progress</span>
+            </div>
+            <div>
+              <div class="task">Schema migration review</div>
+              <div class="meta">Codex · 1 blocker</div>
+            </div>
+            <div class="mono">Jan 31</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <span class="checkbox checked"></span>
+              <span class="tag">Done</span>
+            </div>
+            <div>
+              <div class="task">Incident report summary</div>
+              <div class="meta">Gemini · 2 files changed</div>
+            </div>
+            <div class="mono">Jan 30</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">2 · Atlassian-style lozenge pill</div>
+        <div class="table">
+          <div class="row">
+            <div class="status-col">
+              <span class="lozenge">To do</span>
+            </div>
+            <div>
+              <div class="task">Define auth edge cases</div>
+              <div class="meta">Claude · 3 files changed</div>
+            </div>
+            <div class="mono">Feb 1</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <span class="lozenge progress">In progress</span>
+            </div>
+            <div>
+              <div class="task">Schema migration review</div>
+              <div class="meta">Codex · 1 blocker</div>
+            </div>
+            <div class="mono">Jan 31</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <span class="lozenge done">Done</span>
+            </div>
+            <div>
+              <div class="task">Incident report summary</div>
+              <div class="meta">Gemini · 2 files changed</div>
+            </div>
+            <div class="mono">Jan 30</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <span class="lozenge blocked">Blocked</span>
+            </div>
+            <div>
+              <div class="task">OAuth callback fix</div>
+              <div class="meta">Fuyu · needs review</div>
+            </div>
+            <div class="mono">Jan 29</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">3 · Carbon-style dot indicator + label</div>
+        <div class="table">
+          <div class="row">
+            <div class="status-col">
+              <span class="indicator"></span>
+              <span class="tag">To do</span>
+            </div>
+            <div>
+              <div class="task">Define auth edge cases</div>
+              <div class="meta">Claude · 3 files changed</div>
+            </div>
+            <div class="mono">Feb 1</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <span class="indicator progress"></span>
+              <span class="tag">In progress</span>
+            </div>
+            <div>
+              <div class="task">Schema migration review</div>
+              <div class="meta">Codex · 1 blocker</div>
+            </div>
+            <div class="mono">Jan 31</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <span class="indicator done"></span>
+              <span class="tag">Done</span>
+            </div>
+            <div>
+              <div class="task">Incident report summary</div>
+              <div class="meta">Gemini · 2 files changed</div>
+            </div>
+            <div class="mono">Jan 30</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <span class="indicator blocked"></span>
+              <span class="tag">Blocked</span>
+            </div>
+            <div>
+              <div class="task">OAuth callback fix</div>
+              <div class="meta">Fuyu · needs review</div>
+            </div>
+            <div class="mono">Jan 29</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">4 · Hybrid tickbox + micro lozenge</div>
+        <div class="table">
+          <div class="row">
+            <div class="status-col">
+              <div class="hybrid">
+                <span class="checkbox"></span>
+                <span class="tag-mini">To do</span>
+              </div>
+            </div>
+            <div>
+              <div class="task">Define auth edge cases</div>
+              <div class="meta">Claude · 3 files changed</div>
+            </div>
+            <div class="mono">Feb 1</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <div class="hybrid">
+                <span class="checkbox partial"></span>
+                <span class="tag-mini progress">In progress</span>
+              </div>
+            </div>
+            <div>
+              <div class="task">Schema migration review</div>
+              <div class="meta">Codex · 1 blocker</div>
+            </div>
+            <div class="mono">Jan 31</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <div class="hybrid">
+                <span class="checkbox checked"></span>
+                <span class="tag-mini done">Done</span>
+              </div>
+            </div>
+            <div>
+              <div class="task">Incident report summary</div>
+              <div class="meta">Gemini · 2 files changed</div>
+            </div>
+            <div class="mono">Jan 30</div>
+          </div>
+          <div class="row">
+            <div class="status-col">
+              <div class="hybrid">
+                <span class="checkbox"></span>
+                <span class="tag-mini blocked">Blocked</span>
+              </div>
+            </div>
+            <div>
+              <div class="task">OAuth callback fix</div>
+              <div class="meta">Fuyu · needs review</div>
+            </div>
+            <div class="mono">Jan 29</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

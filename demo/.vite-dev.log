@@ -1,0 +1,199 @@
+
+> ai-agent-manager-demo@0.0.0 dev
+> vite --port 5173
+
+Re-optimizing dependencies because lockfile has changed
+
+  VITE v5.4.21  ready in 363 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+18:58:43 [vite] page reload style-playground.html
+18:59:15 [vite] page reload style-playground.html
+19:03:13 [vite] page reload style-playground.html
+19:03:21 [vite] page reload style-playground.html
+19:05:44 [vite] page reload style-playground.html
+19:05:49 [vite] page reload style-playground.html
+19:16:20 [vite] page reload style-playground.html
+19:16:37 [vite] page reload style-playground.html
+19:20:18 [vite] page reload style-playground.html
+19:20:24 [vite] page reload style-playground.html
+19:40:46 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+19:40:47 [vite] ✨ new dependencies optimized: @phosphor-icons/react
+19:40:47 [vite] ✨ optimized dependencies changed. reloading
+19:40:55 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+19:41:06 [vite] hmr update /src/views/FileViewer.tsx, /src/index.css
+19:41:14 [vite] hmr update /src/views/FileViewer.tsx, /src/index.css
+19:41:25 [vite] hmr update /src/views/FileViewer.tsx, /src/index.css
+19:41:31 [vite] hmr update /src/views/ApiView.tsx, /src/index.css
+19:41:43 [vite] hmr update /src/views/ApiView.tsx, /src/index.css
+19:41:59 [vite] hmr update /src/views/WhiteboardView.tsx, /src/index.css
+19:42:11 [vite] hmr update /src/views/WhiteboardView.tsx, /src/index.css
+19:42:17 [vite] hmr update /src/views/KanbanView.tsx, /src/index.css
+19:42:23 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+19:42:34 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+19:42:42 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+19:42:48 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+19:42:58 [vite] hmr update /src/views/CustomizeView.tsx, /src/index.css
+19:43:09 [vite] hmr update /src/views/CustomizeView.tsx, /src/index.css
+19:43:15 [vite] hmr update /src/views/InboxView.tsx, /src/index.css
+19:43:27 [vite] hmr update /src/views/InboxView.tsx, /src/index.css
+19:43:36 [vite] hmr update /src/views/FilesView.tsx, /src/index.css
+19:44:00 [vite] hmr update /src/views/FilesView.tsx, /src/index.css
+19:44:07 [vite] hmr update /src/components/layout/TopNav.tsx, /src/index.css
+19:44:29 [vite] hmr update /src/components/layout/TopNav.tsx, /src/index.css
+19:44:38 [vite] hmr update /src/components/layout/LeftSidebar.tsx, /src/index.css
+19:45:06 [vite] hmr update /src/components/layout/LeftSidebar.tsx, /src/index.css
+19:45:12 [vite] hmr update /src/components/layout/ViewTabs.tsx, /src/index.css
+19:45:33 [vite] hmr update /src/components/layout/ViewTabs.tsx, /src/index.css
+19:45:39 [vite] hmr update /src/components/layout/ProjectHeader.tsx, /src/index.css
+19:46:00 [vite] hmr update /src/components/layout/ProjectHeader.tsx, /src/index.css
+19:46:18 [vite] hmr update /src/components/layout/ProjectHeader.tsx, /src/index.css
+19:46:23 [vite] hmr update /src/components/TaskCard.tsx, /src/index.css
+19:46:48 [vite] hmr update /src/components/TaskCard.tsx, /src/index.css
+19:46:56 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+19:47:13 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+19:48:42 [vite] hmr update /src/components/layout/LeftSidebar.tsx, /src/index.css
+19:52:26 [vite] hmr update /src/index.css, /src/views/KanbanView.tsx, /src/views/TableView.tsx, /src/components/layout/LeftSidebar.tsx, /src/components/layout/ProjectHeader.tsx, /src/views/ChatView.tsx, /src/views/DashboardView.tsx, /src/views/InboxView.tsx, /src/views/WhiteboardView.tsx, /src/views/ApiView.tsx
+19:53:37 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+19:53:52 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+19:54:07 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+19:54:22 [vite] hmr update /src/components/TaskCard.tsx, /src/index.css
+19:54:42 [vite] hmr update /src/views/WhiteboardView.tsx, /src/index.css
+19:55:14 [vite] hmr update /src/views/KanbanView.tsx, /src/index.css
+19:59:34 [vite] page reload avatar-playground.html
+19:59:46 [vite] page reload avatar-playground.html
+20:02:29 [vite] page reload avatar-playground.html
+20:02:42 [vite] page reload avatar-playground.html
+20:04:56 [vite] page reload avatar-playground.html
+20:05:09 [vite] page reload avatar-playground.html
+20:10:13 [vite] hmr update /src/components/Avatar.tsx, /src/index.css
+20:10:40 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+20:11:00 [vite] hmr update /src/views/InboxView.tsx, /src/index.css
+20:11:23 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+20:11:38 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+20:11:54 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+20:12:18 [vite] hmr update /src/views/FilesView.tsx, /src/index.css
+20:13:02 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+20:13:25 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+20:21:25 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+20:21:38 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+20:25:16 [vite] page reload status-playground.html
+20:25:21 [vite] page reload status-playground.html
+20:26:17 [vite] page reload status-playground.html
+20:29:08 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+20:29:20 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+20:29:33 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+20:29:40 [vite] hmr update /src/views/KanbanView.tsx, /src/index.css
+20:33:23 [vite] page reload kanban-playground.html
+20:33:31 [vite] page reload kanban-playground.html
+20:38:21 [vite] page reload kanban-playground.html
+20:38:28 [vite] page reload kanban-playground.html
+20:42:35 [vite] page reload src/types/index.ts
+20:42:42 [vite] hmr update /src/index.css, /src/views/KanbanView.tsx, /src/views/TableView.tsx, /src/components/layout/LeftSidebar.tsx, /src/components/layout/ProjectHeader.tsx, /src/views/ChatView.tsx, /src/views/DashboardView.tsx, /src/views/InboxView.tsx, /src/views/WhiteboardView.tsx, /src/views/ApiView.tsx, /src/views/FilesView.tsx
+20:42:52 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+20:43:08 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+20:43:22 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+20:43:46 [vite] hmr update /src/views/KanbanView.tsx, /src/index.css
+20:44:10 [vite] hmr update /src/components/TaskCard.tsx, /src/index.css
+20:44:34 [vite] hmr update /src/views/KanbanView.tsx, /src/index.css
+20:46:13 [vite] page reload table-playground.html
+20:46:18 [vite] page reload table-playground.html
+20:48:41 [vite] page reload tailwind.config.js
+20:48:52 [vite] hmr update /src/index.css
+20:48:58 [vite] hmr update /src/views/FileViewer.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/views/InboxView.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/views/FilesView.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/views/KanbanView.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/components/TaskCard.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/components/layout/LeftSidebar.tsx, /src/index.css
+20:48:58 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+20:49:06 [vite] hmr update /src/components/layout/ViewTabs.tsx, /src/index.css
+20:49:34 [vite] hmr update /src/views/FilesView.tsx, /src/index.css
+20:50:14 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+20:50:50 [vite] hmr update /src/components/layout/LeftSidebar.tsx, /src/index.css
+20:51:52 [vite] page reload api-dashboard-option-a.html
+20:52:10 [vite] page reload table-playground.html
+20:52:20 [vite] page reload table-playground.html
+20:52:46 [vite] page reload api-dashboard-option-b.html
+20:53:36 [vite] page reload api-dashboard-option-c.html
+20:55:15 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+20:55:15 [vite] page reload api-dashboard-option-a.html
+20:55:15 [vite] page reload api-dashboard-option-b.html
+20:55:15 [vite] page reload api-dashboard-option-c.html
+20:55:29 [vite] page reload tailwind.config.js
+20:55:43 [vite] hmr update /src/index.css
+21:01:34 [vite] hmr update /src/views/ApiView.tsx, /src/index.css
+21:07:43 [vite] page reload tailwind.config.js
+21:07:51 [vite] hmr update /src/index.css
+21:14:13 [vite] hmr update /src/views/KanbanView.tsx, /src/index.css
+21:14:32 [vite] hmr update /src/components/TaskCard.tsx, /src/index.css
+21:14:56 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:15:05 [vite] hmr update /src/components/layout/ViewTabs.tsx, /src/index.css
+21:15:14 [vite] hmr update /src/components/layout/LeftSidebar.tsx, /src/index.css
+21:15:25 [vite] hmr update /src/components/layout/LeftSidebar.tsx, /src/index.css
+21:15:55 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+21:16:03 [vite] hmr update /src/views/FilesView.tsx, /src/index.css
+21:17:16 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:24:29 [vite] hmr update /src/views/InboxView.tsx, /src/index.css
+21:24:50 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+21:25:03 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+21:25:24 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:25:31 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:25:59 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:27:07 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+21:27:23 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+21:28:30 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+21:28:44 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+21:29:45 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+21:29:54 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+21:30:07 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+21:30:25 [vite] hmr update /src/components/layout/ViewTabs.tsx, /src/index.css
+21:30:37 [vite] hmr update /src/components/layout/ProjectHeader.tsx, /src/index.css
+21:31:22 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:31:59 [vite] hmr update /src/components/layout/ProjectHeader.tsx, /src/index.css
+21:32:06 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+21:33:01 [vite] hmr update /src/components/TaskCard.tsx, /src/index.css
+21:33:40 [vite] hmr update /src/views/KanbanView.tsx, /src/index.css
+21:33:47 [vite] hmr update /src/index.css
+21:34:38 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:35:16 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:35:30 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:35:51 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:36:08 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:36:56 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+21:38:08 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:38:18 [vite] hmr update /src/views/TableView.tsx, /src/index.css
+21:39:24 [vite] hmr update /src/views/ApiView.tsx, /src/index.css
+21:40:38 [vite] hmr update /src/views/InboxView.tsx, /src/index.css
+21:41:19 [vite] hmr update /src/views/InboxView.tsx, /src/index.css
+15:30:47 [vite] hmr update /src/views/RolesView.tsx, /src/index.css
+15:50:02 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:50:08 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:50:17 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:50:26 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:50:43 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:50:52 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:50:59 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:51:07 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:51:16 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:51:26 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:51:42 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+15:52:27 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+16:03:21 [vite] page reload router-playground.html
+16:05:04 [vite] page reload router-playground.html
+16:06:29 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
+16:23:52 [vite] page reload notion-type-playground.html
+16:25:30 [vite] page reload notion-type-playground.html
+16:26:38 [vite] page reload tailwind.config.js
+16:26:50 [vite] hmr update /src/index.css
+16:29:11 [vite] hmr update /src/components/layout/LeftSidebar.tsx, /src/index.css
+16:42:22 [vite] page reload serif-font-playground.html
+16:43:43 [vite] page reload serif-font-playground.html
+16:45:32 [vite] hmr update /src/index.css
+16:47:43 [vite] hmr update /src/index.css
+16:48:20 [vite] hmr update /src/views/DashboardView.tsx, /src/index.css
+16:58:03 [vite] hmr update /src/views/ChatView.tsx, /src/index.css
