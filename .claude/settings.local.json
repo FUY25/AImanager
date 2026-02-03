@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git clone:*)",
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "Bash(open:*)",
+      "Bash(screencapture:*)",
+      "Bash(npm run build:*)",
+      "Bash(python3:*)"
+    ]
+  }
+}
