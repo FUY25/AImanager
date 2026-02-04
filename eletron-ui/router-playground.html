@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Task Router Style Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f1f1ef;
+      --panel: #f9f8f6;
+      --panel-muted: #f1f0ed;
+      --border: #d8d3cd;
+      --text: #26231f;
+      --text-secondary: #5f5952;
+      --text-tertiary: #756e66;
+      --accent: #33465d;
+      --accent-soft: #e1e6ee;
+      --success: #2f7d4b;
+      --error: #b24b4b;
+      --warning: #b26a2b;
+      --shadow: 0 12px 24px rgba(43, 40, 35, 0.12);
+      --shadow-soft: 0 8px 16px rgba(43, 40, 35, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h1, h2 {
+      font-family: 'Bodoni MT', 'Didot', 'Times New Roman', serif;
+      letter-spacing: 0.01em;
+      margin: 0 0 8px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 32px auto 48px;
+      padding: 0 24px;
+    }
+
+    .header {
+      margin-bottom: 24px;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+    }
+
+    .agent {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: #d9d6d0;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .presence {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--panel);
+      background: var(--success);
+      box-shadow: 0 0 0 2px rgba(47, 125, 75, 0.12);
+    }
+
+    .meta {
+      min-width: 0;
+    }
+
+    .meta h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .meta p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(51, 70, 93, 0.2);
+    }
+
+    /* Option 1 */
+    .router-flag {
+      position: relative;
+      padding-left: 12px;
+    }
+
+    .router-flag::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      border-radius: 2px;
+      background: var(--accent);
+    }
+
+    /* Option 2 */
+    .router-orbit {
+      border: 1px solid rgba(51, 70, 93, 0.45);
+      background: linear-gradient(135deg, #fdfcfb 0%, #f3f0eb 60%, #ece7df 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .router-orbit::after {
+      content: "";
+      position: absolute;
+      inset: -30px;
+      border: 1px dashed rgba(51, 70, 93, 0.2);
+      border-radius: 50%;
+    }
+
+    /* Option 3 */
+    .router-stamp {
+      position: relative;
+      border-style: solid;
+      border-width: 1px 1px 1px 6px;
+      border-color: var(--border) var(--border) var(--border) var(--warning);
+      background: #faf8f4;
+    }
+
+    .router-stamp::after {
+      content: "Routing Desk";
+      position: absolute;
+      top: 16px;
+      right: -18px;
+      transform: rotate(90deg);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--warning);
+    }
+
+    /* Option 4 */
+    .router-crest {
+      background: linear-gradient(90deg, rgba(51, 70, 93, 0.08), rgba(51, 70, 93, 0));
+      border: 1px solid rgba(51, 70, 93, 0.35);
+    }
+
+    .crest {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .crest span {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(51, 70, 93, 0.5);
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      background: #fdfcfb;
+    }
+
+    /* Option 5 */
+    .router-panel {
+      border: 1px solid rgba(51, 70, 93, 0.5);
+      background: linear-gradient(180deg, rgba(51, 70, 93, 0.08), rgba(51, 70, 93, 0.02));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), var(--shadow);
+    }
+
+    .route-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 10px;
+    }
+
+    .route-line span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .soft-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(51, 70, 93, 0.2), transparent);
+      margin: 12px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>Task Router Treatment</h1>
+      <p>Five ways to make the Task Router feel special while staying in the Ledger Slate style.</p>
+    </div>
+
+    <div class="grid">
+      <section class="card router-flag">
+        <div class="label">Option 1 · Pinned Strip</div>
+        <div class="agent">
+          <div class="avatar">
+            <img src="./public/avatars/agent-5.png" alt="Task Router">
+            <span class="presence"></span>
+          </div>
+          <div class="meta">
+            <h3>Task Router</h3>
+            <p>Assignment desk · Ask before assigning</p>
+          </div>
+        </div>
+        <div class="soft-divider"></div>
+        <span class="pill">Pinned · Routing</span>
+      </section>
+
+      <section class="card router-orbit">
+        <div class="label">Option 2 · Orbit Halo</div>
+        <div class="agent">
+          <div class="avatar">
+            <img src="./public/avatars/agent-5.png" alt="Task Router">
+            <span class="presence"></span>
+          </div>
+          <div class="meta">
+            <h3>Task Router</h3>
+            <p>Triages tasks by type + availability</p>
+          </div>
+        </div>
+        <div class="route-line"><span></span>Auto triage ready</div>
+      </section>
+
+      <section class="card router-stamp">
+        <div class="label">Option 3 · Editorial Stamp</div>
+        <div class="agent">
+          <div class="avatar">
+            <img src="./public/avatars/agent-5.png" alt="Task Router">
+            <span class="presence"></span>
+          </div>
+          <div class="meta">
+            <h3>Task Router</h3>
+            <p>Project-wide intake · Recommendations only</p>
+          </div>
+        </div>
+        <div class="route-line"><span></span>Needs approval to assign</div>
+      </section>
+
+      <section class="card router-crest">
+        <div class="label">Option 4 · Crest Badge</div>
+        <div class="agent">
+          <div class="avatar">
+            <img src="./public/avatars/agent-5.png" alt="Task Router">
+            <span class="presence"></span>
+          </div>
+          <div class="meta">
+            <h3>Task Router</h3>
+            <p>Staffing helper · Keeps the load balanced</p>
+          </div>
+        </div>
+        <div class="soft-divider"></div>
+        <div class="crest"><span>R</span> Router Desk</div>
+      </section>
+
+      <section class="card router-panel">
+        <div class="label">Option 5 · Command Panel</div>
+        <div class="agent">
+          <div class="avatar">
+            <img src="./public/avatars/agent-5.png" alt="Task Router">
+            <span class="presence"></span>
+          </div>
+          <div class="meta">
+            <h3>Task Router</h3>
+            <p>Suggests owners + drafts tasks</p>
+          </div>
+        </div>
+        <div class="soft-divider"></div>
+        <div class="route-line"><span></span>Draft task · Recommend owners</div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

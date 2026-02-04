@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minimal Table UI Playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #efefed;
+        --panel: #f8f7f4;
+        --panel-muted: #f0eeeb;
+        --border: #d7d1c9;
+        --text: #26231f;
+        --muted: #6f675f;
+        --accent: #2f4156;
+        --success: #2f7d4b;
+        --warning: #ad7b2f;
+        --error: #c1463f;
+        --review: #3d5b7e;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 28px 24px 60px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+
+      .header h1 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 600;
+      }
+
+      .header p {
+        margin: 6px 0 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .mono {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 18px 18px;
+        box-shadow: 0 12px 24px rgba(40, 35, 28, 0.08);
+      }
+
+      .title {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      th {
+        text-align: left;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 10px 12px;
+      }
+
+      td {
+        padding: 12px;
+        vertical-align: middle;
+      }
+
+      .row-hover tr:hover td {
+        background: #f6f4f0;
+      }
+
+      .row-soft tr + tr td {
+        border-top: 1px solid var(--border);
+      }
+
+      .label {
+        font-weight: 600;
+        font-size: 15px;
+      }
+
+      .subtext {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        display: inline-block;
+        margin-right: 8px;
+      }
+
+      .dot-todo { background: #9a9892; }
+      .dot-progress { background: var(--accent); }
+      .dot-review { background: var(--review); }
+      .dot-done { background: var(--success); }
+      .dot-blocked { background: var(--error); }
+      .dot-canceled { background: #8f8b85; }
+
+      .badge {
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #fbfaf8;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <div>
+          <h1>Table UI Playground</h1>
+          <p>Demo data from current app (Table 1 + Table 5).</p>
+        </div>
+        <div class="mono">Ledger Slate Tight · v2</div>
+      </div>
+
+      <div class="card">
+        <div class="title">Style 1 · Hairline ledger (Notion-like)</div>
+        <table class="row-soft row-hover">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Task</th>
+              <th>Owner</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="status-dot dot-todo"></span>To do</td>
+              <td>
+                <div class="label">Design Auth UI</div>
+                <div class="subtext">Design a modern authentication UI with email/password login.</div>
+              </td>
+              <td>Claude Opus 4.5</td>
+              <td>Jan 20</td>
+            </tr>
+            <tr>
+              <td><span class="status-dot dot-progress"></span>In progress</td>
+              <td>
+                <div class="label">API Endpoint Development</div>
+                <div class="subtext">Create RESTful API endpoints for user authentication.</div>
+              </td>
+              <td>Gemini Pro 2.0</td>
+              <td>Jan 28</td>
+            </tr>
+            <tr>
+              <td><span class="status-dot dot-review"></span>Review</td>
+              <td>
+                <div class="label">Write Unit Tests</div>
+                <div class="subtext">Write unit tests for authentication API endpoints.</div>
+              </td>
+              <td>Gemini Pro 2.0</td>
+              <td>Jan 27</td>
+            </tr>
+            <tr>
+              <td><span class="status-dot dot-done"></span>Done</td>
+              <td>
+                <div class="label">OAuth Integration</div>
+                <div class="subtext">Integrate OAuth 2.0 for Google and GitHub.</div>
+              </td>
+              <td>Claude Opus 4.5</td>
+              <td>Jan 25</td>
+            </tr>
+            <tr>
+              <td><span class="status-dot dot-blocked"></span>Blocked</td>
+              <td>
+                <div class="label">Database Schema Design</div>
+                <div class="subtext">Design PostgreSQL database schema for users and sessions.</div>
+              </td>
+              <td>Codex GPT-4</td>
+              <td>Jan 24</td>
+            </tr>
+            <tr>
+              <td><span class="status-dot dot-canceled"></span>Canceled</td>
+              <td>
+                <div class="label">API Route Protection</div>
+                <div class="subtext">Implement middleware for protecting API routes with JWT authentication.</div>
+              </td>
+              <td>—</td>
+              <td>Jan 25</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="title">Style 5 · Editorial list (Linear-ish)</div>
+        <table class="row-soft row-hover">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Task</th>
+              <th>Owner</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge">To do</span></td>
+              <td>
+                <div class="label">Design Auth UI</div>
+                <div class="subtext">Design a modern authentication UI with email/password login.</div>
+              </td>
+              <td>Claude Opus 4.5</td>
+              <td>Jan 20</td>
+            </tr>
+            <tr>
+              <td><span class="badge">In progress</span></td>
+              <td>
+                <div class="label">API Endpoint Development</div>
+                <div class="subtext">Create RESTful API endpoints for user authentication.</div>
+              </td>
+              <td>Gemini Pro 2.0</td>
+              <td>Jan 28</td>
+            </tr>
+            <tr>
+              <td><span class="badge">Review</span></td>
+              <td>
+                <div class="label">Write Unit Tests</div>
+                <div class="subtext">Write unit tests for authentication API endpoints.</div>
+              </td>
+              <td>Gemini Pro 2.0</td>
+              <td>Jan 27</td>
+            </tr>
+            <tr>
+              <td><span class="badge">Done</span></td>
+              <td>
+                <div class="label">OAuth Integration</div>
+                <div class="subtext">Integrate OAuth 2.0 for Google and GitHub.</div>
+              </td>
+              <td>Claude Opus 4.5</td>
+              <td>Jan 25</td>
+            </tr>
+            <tr>
+              <td><span class="badge">Blocked</span></td>
+              <td>
+                <div class="label">Database Schema Design</div>
+                <div class="subtext">Design PostgreSQL database schema for users and sessions.</div>
+              </td>
+              <td>Codex GPT-4</td>
+              <td>Jan 24</td>
+            </tr>
+            <tr>
+              <td><span class="badge">Canceled</span></td>
+              <td>
+                <div class="label">API Route Protection</div>
+                <div class="subtext">Implement middleware for protecting API routes with JWT authentication.</div>
+              </td>
+              <td>—</td>
+              <td>Jan 25</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

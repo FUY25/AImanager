@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>API Usage Dashboard - Option B</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f1f1ef;
+      --panel: #f9f8f6;
+      --panel-muted: #f1f0ed;
+      --border: #d8d3cd;
+      --text: #26231f;
+      --text-secondary: #5f5952;
+      --text-tertiary: #756e66;
+      --accent: #33465d;
+      --success: #2f7d4b;
+      --error: #b24b4b;
+      --body-font: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+      --display-font: 'Bodoni MT', 'Didot', 'Times New Roman', serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--body-font);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3 {
+      font-family: var(--display-font);
+      margin: 0;
+      letter-spacing: 0.01em;
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 24px 28px 32px;
+      background-image:
+        linear-gradient(120deg, rgba(51, 70, 93, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 92% 14%, rgba(47, 125, 75, 0.05), transparent 45%);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .topbar h1 {
+      font-size: 2rem;
+    }
+
+    .topbar small {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filters select,
+    .filters button {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text-secondary);
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-family: var(--body-font);
+    }
+
+    .filters button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.04);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+
+    .kpi {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .kpi .value {
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .sub {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .bar {
+      height: 8px;
+      background: #ded8d0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+    }
+
+    .tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: var(--panel-muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    .timeline {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 160px;
+    }
+
+    .timeline div {
+      flex: 1;
+      background: #d7d0c8;
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline div span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 45%;
+      background: var(--accent);
+    }
+
+    .timeline div i {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 20%;
+      background: var(--success);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .table th,
+    .table td {
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .table th {
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .alert {
+      background: var(--panel-muted);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 0.82rem;
+      display: grid;
+      gap: 4px;
+    }
+
+    @media (max-width: 1100px) {
+      .grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div>
+        <h1>API Usage Studio</h1>
+        <small>Compact grid dashboard for cost, velocity, and reliability.</small>
+      </div>
+      <div class="filters">
+        <select>
+          <option>Last 7 Days</option>
+          <option>Last 30 Days</option>
+          <option>Last 90 Days</option>
+        </select>
+        <button>Export</button>
+        <button class="primary">Alerts</button>
+      </div>
+    </div>
+
+    <section class="grid">
+      <div class="card" style="grid-column: span 3;">
+        <div class="kpi">
+          <div class="sub">Total spend</div>
+          <div class="value">$340.25</div>
+          <div class="bar"><span style="width: 68%;"></span></div>
+        </div>
+      </div>
+      <div class="card" style="grid-column: span 3;">
+        <div class="kpi">
+          <div class="sub">Requests</div>
+          <div class="value">1.2M</div>
+          <div class="sub">+12% week over week</div>
+        </div>
+      </div>
+      <div class="card" style="grid-column: span 3;">
+        <div class="kpi">
+          <div class="sub">Success rate</div>
+          <div class="value" style="color: var(--success);">98.4%</div>
+          <div class="sub">P95 1.3s</div>
+        </div>
+      </div>
+      <div class="card" style="grid-column: span 3;">
+        <div class="kpi">
+          <div class="sub">Budget left</div>
+          <div class="value">$160</div>
+          <div class="tags">
+            <span class="tag">Cap $500</span>
+            <span class="tag">Auto scale</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: span 8;">
+        <h3>Usage Timeline</h3>
+        <div class="timeline" aria-hidden="true">
+          <div style="height: 70%;"><span></span><i></i></div>
+          <div style="height: 45%;"><span></span><i></i></div>
+          <div style="height: 82%;"><span></span><i></i></div>
+          <div style="height: 60%;"><span></span><i></i></div>
+          <div style="height: 92%;"><span></span><i></i></div>
+          <div style="height: 50%;"><span></span><i></i></div>
+          <div style="height: 75%;"><span></span><i></i></div>
+        </div>
+      </div>
+      <div class="card" style="grid-column: span 4;">
+        <h3>Model Split</h3>
+        <div class="split">
+          <div>
+            <div class="sub">Claude</div>
+            <div class="bar"><span style="width: 62%;"></span></div>
+          </div>
+          <div>
+            <div class="sub">Gemini</div>
+            <div class="bar"><span style="width: 24%;"></span></div>
+          </div>
+          <div>
+            <div class="sub">Codex</div>
+            <div class="bar"><span style="width: 14%;"></span></div>
+          </div>
+          <div>
+            <div class="sub">Tokens</div>
+            <div class="value">1.8M</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: span 6;">
+        <h3>Error Log</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Type</th>
+              <th>Model</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>13m ago</td>
+              <td style="color: var(--error);">Rate limit</td>
+              <td>Claude</td>
+            </tr>
+            <tr>
+              <td>1h ago</td>
+              <td style="color: var(--accent);">Timeout</td>
+              <td>Gemini</td>
+            </tr>
+            <tr>
+              <td>4h ago</td>
+              <td style="color: var(--error);">Auth</td>
+              <td>Codex</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" style="grid-column: span 6;">
+        <h3>Alerts & Actions</h3>
+        <div class="alert">
+          <strong>Claude nearing quota</strong>
+          <span class="sub">85% of rate limit reached. Shift overflow.</span>
+        </div>
+        <div class="alert" style="margin-top: 10px;">
+          <strong>Reduce Gemini latency</strong>
+          <span class="sub">Scale up in us-east-1 for batch jobs.</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
