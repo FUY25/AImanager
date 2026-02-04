@@ -1,12 +1,16 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { mockTasks, mockAgents } from '../data/mockData';
 import { Task, Agent, RiskFlag, TaskStatus } from '../types';
 import Avatar from '../components/Avatar';
+import ViewTabs from '../components/layout/ViewTabs';
+import { useRightPanel } from '../context/RightPanelContext';
 import {
   CaretDown,
   CaretRight,
   GitDiff,
   ArrowSquareOut,
+  FunnelSimple,
+  PaperPlaneRight,
 } from '@phosphor-icons/react';
 
 const statusMeta: Record<
@@ -51,6 +55,21 @@ export default function TableView() {
   const [expandedAgents, setExpandedAgents] = useState<Set<string>>(
     new Set(mockAgents.map(a => a.id))
   );
+  const { openDiff, openChat } = useRightPanel();
+  const [compactOpenId, setCompactOpenId] = useState<string | null>(null);
+  const [compactNotes, setCompactNotes] = useState<Record<string, string>>({});
+  const compactRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!compactOpenId) return;
+    const handleClick = (event: MouseEvent) => {
+      if (compactRef.current && !compactRef.current.contains(event.target as Node)) {
+        setCompactOpenId(null);
+      }
+    };
+    window.addEventListener('mousedown', handleClick);
+    return () => window.removeEventListener('mousedown', handleClick);
+  }, [compactOpenId]);
 
   const toggleAgent = (agentId: string) => {
     const newExpanded = new Set(expandedAgents);
@@ -117,12 +136,14 @@ export default function TableView() {
     return (
       <div className="flex flex-wrap gap-1">
         {display.map(file => (
-          <span
+          <button
             key={file}
-            className="text-xs px-2 py-0.5 bg-bg-tertiary border border-border rounded-full text-text-secondary"
+            type="button"
+            onClick={() => openDiff(file)}
+            className="text-xs px-2 py-0.5 bg-bg-tertiary border border-border rounded-full text-text-secondary hover:text-text-primary"
           >
             {file.split('/').slice(-1)[0]}
-          </span>
+          </button>
         ))}
         {remaining > 0 && (
           <span className="text-xs px-2 py-0.5 bg-bg-tertiary border border-border rounded-full text-text-tertiary">
@@ -138,6 +159,7 @@ export default function TableView() {
     const agentTasks = getTasksByAgent(agent?.id || null);
     const isExpanded = expandedAgents.has(agentId);
     const agentDisplayName = getBotName(agent, agentTasks);
+    const compactNote = compactNotes[agentId] || '';
     const agentRisks = Array.from(new Set(agentTasks.flatMap(task => task.riskFlags || [])));
     const todoCount = agentTasks.filter(task => task.status === 'todo').length;
     const todoPercent = agentTasks.length === 0 ? 0 : Math.round((todoCount / agentTasks.length) * 100);
@@ -146,41 +168,114 @@ export default function TableView() {
     return (
       <div key={agentId} className="mb-6">
         <div className="flex items-center justify-between bg-bg-elevated px-4 py-1.5 rounded-t-lg border border-border">
-          <button
+          <div
             onClick={() => toggleAgent(agentId)}
-            className="flex items-center gap-3 flex-1 text-left"
+            className="flex items-center gap-3 flex-1 text-left cursor-pointer"
           >
             {isExpanded ? <CaretDown size={16} /> : <CaretRight size={16} />}
-            <Avatar
-              src={agent?.avatar}
-              alt={agent?.name}
-              fallback="🤖"
-              className="w-8 h-8 rounded-full"
-              textClassName="text-base"
-            />
-            <div>
-              <div className="text-sm font-semibold text-text-primary">{agentDisplayName}</div>
-              <div className="text-sm text-text-tertiary">
-                {agent ? `Focus: ${agent.capabilities.slice(0, 3).join(', ')}` : 'Unassigned'}
-                {' · '}
-                {agentTasks.length} tasks
-                {' · '}
-                Todo {todoPercent}%
-              </div>
-            </div>
-          </button>
+            {agent ? (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  openChat({ id: agent.id, name: agent.name });
+                }}
+                className="flex items-center gap-3 text-left"
+                title="Open chat"
+              >
+                <Avatar
+                  src={agent.avatar}
+                  alt={agent.name}
+                  fallback={agent.name[0]}
+                  className="w-8 h-8 rounded-full"
+                  textClassName="text-base"
+                />
+                <div>
+                  <div className="text-sm font-semibold text-text-primary">{agentDisplayName}</div>
+                  <div className="text-sm text-text-tertiary">
+                    {`Focus: ${agent.capabilities.slice(0, 3).join(', ')}`}
+                    {' · '}
+                    {agentTasks.length} tasks
+                    {' · '}
+                    Todo {todoPercent}%
+                  </div>
+                </div>
+              </button>
+            ) : (
+              <>
+                <Avatar
+                  src={agent?.avatar}
+                  alt={agent?.name}
+                  fallback="🤖"
+                  className="w-8 h-8 rounded-full"
+                  textClassName="text-base"
+                />
+                <div>
+                  <div className="text-sm font-semibold text-text-primary">{agentDisplayName}</div>
+                  <div className="text-sm text-text-tertiary">
+                    Unassigned · {agentTasks.length} tasks · Todo {todoPercent}%
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
           <div className="flex items-center gap-3">
             {agent && (
-              <div className="hidden md:flex items-center gap-2 text-sm text-text-tertiary">
-                <span>Context</span>
-                <div className="w-20 h-1.5 bg-primary-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-brand"
-                    style={{ width: `${agent.health}%` }}
-                  />
+              <>
+                <div className="relative hidden md:flex items-center">
+                  <button
+                    onClick={() => setCompactOpenId((prev) => (prev === agentId ? null : agentId))}
+                    className="text-xs px-2.5 py-1 border border-border rounded-md text-text-secondary hover:text-text-primary hover:bg-bg-tertiary"
+                  >
+                    Compact
+                  </button>
+                  {compactOpenId === agentId && (
+                    <div
+                      ref={compactRef}
+                      className="absolute right-0 top-full mt-2 w-72 rounded-md border border-border bg-bg-elevated px-3 py-2 text-xs text-text-secondary shadow-soft"
+                    >
+                    <div className="text-[11px] text-text-tertiary mb-1">
+                      Optional: key memory to keep?
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        autoFocus
+                        value={compactNote}
+                        onChange={(event) =>
+                          setCompactNotes((prev) => ({ ...prev, [agentId]: event.target.value }))
+                        }
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            event.preventDefault();
+                            setCompactOpenId(null);
+                          }
+                        }}
+                        className="flex-1 bg-bg-tertiary border border-border rounded-md px-2 py-1 text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none"
+                        placeholder="Summarize what matters most..."
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setCompactOpenId(null)}
+                        className="h-7 w-7 rounded-md border border-border text-text-tertiary hover:text-text-primary hover:bg-bg-tertiary flex items-center justify-center"
+                        title="Send"
+                      >
+                        <PaperPlaneRight size={12} weight="light" />
+                      </button>
+                    </div>
+                  </div>
+                )}
                 </div>
-                <span className="text-text-secondary">{agent.health}%</span>
-              </div>
+                <div className="hidden md:flex items-center gap-2 text-sm text-text-tertiary">
+                  <span>Context</span>
+                  <div className="w-20 h-1.5 bg-primary-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-brand"
+                      style={{ width: `${agent.health}%` }}
+                    />
+                  </div>
+                  <span className="text-text-secondary">{agent.health}%</span>
+                </div>
+              </>
             )}
             <div className="hidden md:flex items-center gap-2">
               <span
@@ -261,6 +356,16 @@ export default function TableView() {
                     </Fragment>
                   );
                 })}
+                <tr className="border-t border-border/70 bg-bg-elevated">
+                  <td colSpan={4} className="px-4 py-2">
+                    <button className="text-xs text-text-secondary hover:text-text-primary flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full border border-border flex items-center justify-center text-text-tertiary">
+                        +
+                      </span>
+                      Add task
+                    </button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -270,33 +375,30 @@ export default function TableView() {
   };
 
   return (
-    <div className="flex-1 overflow-auto p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <select className="px-3 py-1.5 text-sm border border-border rounded bg-bg-elevated text-text-secondary">
-            <option>Status: All</option>
-            <option>Status: TODO</option>
-            <option>Status: In Progress</option>
-            <option>Status: Review</option>
-            <option>Status: Done</option>
-            <option>Status: Blocked</option>
-            <option>Status: Canceled</option>
-          </select>
-          <select className="px-3 py-1.5 text-sm border border-border rounded bg-bg-elevated text-text-secondary">
-            <option>Sort: Created Date</option>
-            <option>Sort: Status</option>
-          </select>
-        </div>
-        <button className="px-4 py-1.5 text-sm bg-brand hover:bg-brand/90 text-white rounded transition-colors">
-          + Add Task
-        </button>
-      </div>
+    <div className="flex-1 overflow-auto">
+      <ViewTabs
+        right={(
+          <>
+            <button className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border bg-bg-elevated hover:text-text-primary transition-colors">
+              <FunnelSimple size={12} weight="light" />
+              Filter
+            </button>
+            <button className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border bg-bg-elevated hover:text-text-primary transition-colors">
+              Status: All
+              <CaretDown size={12} weight="light" />
+            </button>
+            <button className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border bg-bg-elevated hover:text-text-primary transition-colors">
+              Sort: Created
+              <CaretDown size={12} weight="light" />
+            </button>
+          </>
+        )}
+      />
 
-      <div className="space-y-6">
+      <div className="p-6 space-y-6">
         {mockAgents.map(agent => renderAgentSection(agent))}
         {renderAgentSection(null)}
       </div>
-
     </div>
   );
 }

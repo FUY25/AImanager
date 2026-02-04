@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { mockProject, mockDocs, mockUpdates, mockAgents, mockTasks } from '../data/mockData';
 import Avatar from '../components/Avatar';
 import { FileText, CloudArrowUp, GitDiff } from '@phosphor-icons/react';
 import { TaskStatus } from '../types';
+import { useRightPanel } from '../context/RightPanelContext';
 
 const getAgent = (agentId: string) => {
   return mockAgents.find(agent => agent.id === agentId) || null;
@@ -45,10 +46,14 @@ const taskStatusMeta: Record<
 };
 
 export default function DashboardView() {
+  const { openArtifact } = useRightPanel();
+  const [projectOverview, setProjectOverview] = useState(mockProject.description);
   const [knowledgeDraft, setKnowledgeDraft] = useState('');
   const [knowledgeEntries, setKnowledgeEntries] = useState<
     { id: string; note: string; timestamp: string }[]
   >([]);
+  const [isDragActive, setIsDragActive] = useState(false);
+  const dragCounter = useRef(0);
 
   const handleKnowledgeSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -71,45 +76,96 @@ export default function DashboardView() {
     setKnowledgeDraft('');
   };
 
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragCounter.current += 1;
+    setIsDragActive(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragCounter.current = Math.max(dragCounter.current - 1, 0);
+    if (dragCounter.current <= 0) {
+      setIsDragActive(false);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragCounter.current = 0;
+    setIsDragActive(false);
+  };
+
   return (
-    <div className="flex-1 overflow-auto p-6 space-y-6">
+    <div
+      className="flex-1 overflow-auto p-6 pt-4 space-y-6"
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-bg-elevated border border-border rounded-lg p-5">
           <h3 className="text-sm font-prata text-text-primary uppercase tracking-wide mb-3">
             Project Overview
           </h3>
-          <p className="text-sm text-text-secondary leading-relaxed">
-            {mockProject.description}
-          </p>
+          <textarea
+            value={projectOverview}
+            onChange={(event) => setProjectOverview(event.target.value)}
+            className="w-full min-h-[120px] bg-transparent text-sm text-text-secondary leading-relaxed resize-none focus:outline-none"
+            aria-label="Project overview"
+          />
         </div>
 
-        <div className="bg-bg-elevated border border-border rounded-lg p-5">
+        <div className="bg-bg-elevated border border-border rounded-lg p-5 relative">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-prata text-text-primary uppercase tracking-wide">
               Important Docs
             </h3>
-            <button className="text-sm px-2.5 py-1 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary">
+            <label
+              htmlFor="doc-upload"
+              className="text-sm px-2.5 py-1 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary cursor-pointer"
+            >
               Upload
-            </button>
+            </label>
+            <input id="doc-upload" type="file" multiple className="hidden" />
           </div>
           <div className="space-y-3">
             {mockDocs.map(doc => (
-              <div
+              <button
                 key={doc.id}
-                className="flex items-center justify-between text-sm bg-bg-tertiary border border-border rounded-md px-3 py-2"
+                onClick={() => openArtifact({ id: doc.id, name: doc.name })}
+                className="flex items-center justify-between text-sm bg-bg-tertiary border border-border rounded-md px-3 py-2 text-left hover:text-text-primary"
               >
                 <div className="flex items-center gap-2">
                   <FileText size={14} className="text-text-tertiary" />
                   <span className="text-text-primary">{doc.name}</span>
                 </div>
                 <span className="text-text-tertiary">{doc.updatedAtLabel}</span>
-              </div>
+              </button>
             ))}
           </div>
-          <div className="mt-3 text-sm text-text-tertiary flex items-center gap-2">
-            <CloudArrowUp size={12} />
-            Upload to share with all agents.
-          </div>
+          {isDragActive && (
+            <div className="absolute inset-4 rounded-lg border-2 border-dashed border-brand bg-bg-elevated/70 backdrop-blur-sm flex items-center justify-center text-brand pointer-events-none">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-bg-elevated border border-border flex items-center justify-center">
+                  <CloudArrowUp size={18} />
+                </div>
+                <div>
+                  <div className="text-sm font-medium">Drop files here to upload</div>
+                  <div className="text-xs text-text-tertiary">Release to add them to the docs list.</div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

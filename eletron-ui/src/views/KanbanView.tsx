@@ -4,10 +4,13 @@ import { Task, TaskStatus } from '../types';
 import TaskCard from '../components/TaskCard';
 import { Plus, X } from '@phosphor-icons/react';
 import Avatar from '../components/Avatar';
+import ViewTabs from '../components/layout/ViewTabs';
+import { useRightPanel } from '../context/RightPanelContext';
 
 export default function KanbanView() {
   const [tasks] = useState<Task[]>(mockTasks);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const { openChat } = useRightPanel();
 
   const columns: {
     status: TaskStatus;
@@ -78,18 +81,22 @@ export default function KanbanView() {
 
   return (
     <div className="flex-1 overflow-hidden">
-      <div className="px-4 sm:px-6 lg:px-8 pt-3 flex items-center gap-2 text-sm">
-        <button className="px-3 py-1 rounded-full border border-border bg-bg-tertiary text-text-primary">
-          All
-        </button>
-        <button className="px-3 py-1 rounded-full border border-border text-text-tertiary hover:text-text-primary">
-          Assigned
-        </button>
-        <button className="px-3 py-1 rounded-full border border-border text-text-tertiary hover:text-text-primary">
-          Blocked
-        </button>
-        <div className="ml-auto text-text-tertiary">12 tasks</div>
-      </div>
+      <ViewTabs
+        right={(
+          <div className="flex items-center gap-2 text-xs text-text-secondary">
+            <button className="px-2.5 py-1 rounded-full border border-border bg-bg-tertiary text-text-primary">
+              All
+            </button>
+            <button className="px-2.5 py-1 rounded-full border border-border text-text-tertiary hover:text-text-primary">
+              Assigned
+            </button>
+            <button className="px-2.5 py-1 rounded-full border border-border text-text-tertiary hover:text-text-primary">
+              Blocked
+            </button>
+            <div className="ml-2 text-text-tertiary">12 tasks</div>
+          </div>
+        )}
+      />
 
       <div className="h-full flex gap-3 p-4 sm:p-5 lg:p-6 overflow-x-auto">
         {columns.map((column) => {
@@ -119,6 +126,7 @@ export default function KanbanView() {
                     progressClassName={column.progress}
                     avatarClassName="w-8 h-8 rounded-full"
                     onClick={() => setSelectedTask(task)}
+                    onAgentClick={(agent) => openChat({ id: agent.id, name: agent.name })}
                   />
                 ))}
 

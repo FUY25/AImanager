@@ -8,6 +8,8 @@ import {
   X,
   CloudArrowUp,
   Trash,
+  CaretDown,
+  CaretRight,
 } from '@phosphor-icons/react';
 import Avatar from '../components/Avatar';
 
@@ -120,7 +122,7 @@ export default function RolesView() {
   const [profiles, setProfiles] = useState<RoleProfile[]>(seedProfiles);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [feedbackProfile, setFeedbackProfile] = useState<RoleProfile | null>(null);
+  const [expandedFeedback, setExpandedFeedback] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<'profiles' | 'management'>('profiles');
   const [skills, setSkills] = useState<ManagedItem[]>([
     {
@@ -346,25 +348,37 @@ export default function RolesView() {
     setNewMcp({ name: '', description: '' });
   };
 
+  const toggleFeedback = (profileId: string) => {
+    setExpandedFeedback(prev => {
+      const next = new Set(prev);
+      if (next.has(profileId)) {
+        next.delete(profileId);
+      } else {
+        next.add(profileId);
+      }
+      return next;
+    });
+  };
+
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-text-primary">Apprentices</h2>
+          <h2 className="text-base font-semibold text-text-primary">Apprentices</h2>
         </div>
         <div className="flex items-center gap-3">
-          <div className="text-xs text-text-tertiary">{totalProfiles} profiles</div>
+          <div className="text-[11px] text-text-tertiary">{totalProfiles} profiles</div>
           <button
             onClick={() => setViewMode(viewMode === 'profiles' ? 'management' : 'profiles')}
-            className="text-xs px-3 py-2 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary"
+            className="text-[11px] px-2.5 py-1.5 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary"
           >
             {viewMode === 'profiles' ? 'Skill & MCP management' : 'Back to apprentices'}
           </button>
           <button
             onClick={openNewRole}
-            className="flex items-center gap-2 text-xs px-3 py-2 bg-brand hover:bg-brand/90 text-white rounded-md"
+            className="flex items-center gap-2 text-[11px] px-2.5 py-1.5 bg-brand hover:bg-brand/90 text-white rounded-md"
           >
-            <Plus size={14} />
+            <Plus size={12} />
             New apprentice profile
           </button>
         </div>
@@ -373,11 +387,12 @@ export default function RolesView() {
       {viewMode === 'profiles' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {profiles.map(profile => {
+            const feedbackOpen = expandedFeedback.has(profile.id);
+            const preferredSkills = profile.suggestedSkills.slice(0, 3);
             return (
               <div
                 key={profile.id}
-                onClick={() => setFeedbackProfile(profile)}
-                className="border border-border rounded-lg p-4 bg-bg-elevated flex flex-col cursor-pointer hover:shadow-soft transition-shadow"
+                className="border border-border rounded-lg p-4 bg-bg-elevated flex flex-col hover:shadow-soft transition-shadow"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-3">
@@ -397,6 +412,21 @@ export default function RolesView() {
                       <div className="text-sm text-text-secondary mt-2">
                         Goal: {profile.description}
                       </div>
+                      {preferredSkills.length > 0 && (
+                        <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[11px] text-text-tertiary">
+                          <span className="uppercase tracking-wide text-text-tertiary">
+                            Preferred
+                          </span>
+                          {preferredSkills.map(skill => (
+                            <span
+                              key={skill}
+                              className="px-2 py-0.5 rounded-full border border-border bg-bg-tertiary text-text-secondary"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -428,6 +458,44 @@ export default function RolesView() {
                   <div className="mt-2 text-sm text-text-tertiary">
                     Verification: {profile.verificationFiles.length} file
                     {profile.verificationFiles.length > 1 ? 's' : ''}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => toggleFeedback(profile.id)}
+                  className="mt-3 flex items-center justify-between text-[11px] text-text-tertiary hover:text-text-primary"
+                >
+                  <span className="flex items-center gap-1.5">
+                    {feedbackOpen ? <CaretDown size={12} /> : <CaretRight size={12} />}
+                    Feedback ({profile.feedback.length})
+                  </span>
+                  <span className="text-text-tertiary">View</span>
+                </button>
+                {feedbackOpen && (
+                  <div className="mt-2 space-y-2">
+                    {profile.feedback.length === 0 ? (
+                      <div className="text-xs text-text-tertiary bg-bg-tertiary border border-border rounded-md px-3 py-2">
+                        No feedback yet.
+                      </div>
+                    ) : (
+                      profile.feedback.map(entry => (
+                        <div
+                          key={entry.id}
+                          className="border border-border rounded-md bg-bg-tertiary px-3 py-2"
+                        >
+                          <div className="flex items-center justify-between text-xs text-text-tertiary">
+                            <span>{entry.session}</span>
+                            <span>{entry.rating.toFixed(1)} / 5</span>
+                          </div>
+                          <div className="text-sm font-semibold text-text-primary mt-1">
+                            {entry.task}
+                          </div>
+                          <div className="text-xs text-text-secondary mt-1">
+                            {entry.note}
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 )}
               </div>
@@ -528,61 +596,6 @@ export default function RolesView() {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {feedbackProfile && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
-          onClick={() => setFeedbackProfile(null)}
-        >
-          <div
-            className="bg-bg-elevated border border-border rounded-xl w-full max-w-2xl max-h-[80vh] overflow-hidden shadow-strong"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-              <div>
-                <div className="text-sm uppercase tracking-wide text-text-tertiary">
-                  Feedback Log
-                </div>
-                <div className="text-lg font-semibold text-text-primary">
-                  {feedbackProfile.name}
-                </div>
-              </div>
-              <button
-                onClick={() => setFeedbackProfile(null)}
-                className="p-2 rounded-md text-text-tertiary hover:text-text-primary hover:bg-bg-tertiary"
-                aria-label="Close feedback"
-              >
-                <X size={16} />
-              </button>
-            </div>
-            <div className="px-6 py-4 space-y-3 overflow-auto max-h-[calc(80vh-120px)]">
-              {feedbackProfile.feedback.length === 0 ? (
-                <div className="text-sm text-text-tertiary bg-bg-tertiary border border-dashed border-border rounded-md px-4 py-3">
-                  No feedback captured yet.
-                </div>
-              ) : (
-                feedbackProfile.feedback.map(entry => (
-                  <div
-                    key={entry.id}
-                    className="border border-border rounded-md bg-bg-tertiary px-4 py-3"
-                  >
-                    <div className="flex items-center justify-between text-sm text-text-tertiary">
-                      <span>{entry.session}</span>
-                      <span>{entry.rating.toFixed(1)} / 5</span>
-                    </div>
-                    <div className="text-sm font-semibold text-text-primary mt-1">
-                      {entry.task}
-                    </div>
-                    <div className="text-sm text-text-secondary mt-1">
-                      {entry.note}
-                    </div>
-                  </div>
-                ))
-              )}
             </div>
           </div>
         </div>

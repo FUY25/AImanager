@@ -1,17 +1,13 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { mockAgents, mockProject, mockTasks } from '../data/mockData';
 import Avatar from '../components/Avatar';
 import {
   MagnifyingGlass,
   Plus,
   PaperPlaneRight,
-  Sparkle,
-  Pencil,
-  Image,
-  Check,
-  X,
   FunnelSimple,
   ClipboardText,
+  Paperclip,
 } from '@phosphor-icons/react';
 
 interface ChatAgent {
@@ -164,9 +160,8 @@ export default function ChatView() {
   const [draft, setDraft] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [typingAgentId, setTypingAgentId] = useState<string | null>(null);
-  const [editingAgentId, setEditingAgentId] = useState<string | null>(null);
-  const [nameDraft, setNameDraft] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const modelOptions = ['GPT-4.1', 'Claude 3.5', 'Gemini 2.0'];
+  const [activeModel, setActiveModel] = useState(modelOptions[0]);
 
   const activeAgent = agents.find(agent => agent.id === activeAgentId) || agents[0];
   const isRouterActive = Boolean(activeAgent?.isRouter);
@@ -249,65 +244,19 @@ export default function ChatView() {
     setActiveAgentId(newAgent.id);
   };
 
-  const startEditAgent = () => {
-    if (!activeAgent || activeAgent.isRouter) return;
-    setEditingAgentId(activeAgent.id);
-    setNameDraft(activeAgent.name);
-  };
-
-  const cancelEditAgent = () => {
-    setEditingAgentId(null);
-    setNameDraft('');
-  };
-
-  const saveAgentEdits = () => {
-    if (!activeAgent || activeAgent.isRouter) return;
-    const trimmed = nameDraft.trim();
-    if (!trimmed) return;
-    setAgents(prev =>
-      prev.map(agent =>
-        agent.id === activeAgent.id
-          ? {
-              ...agent,
-              name: trimmed,
-            }
-          : agent
-      )
-    );
-    cancelEditAgent();
-  };
-
-  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !activeAgent || activeAgent.isRouter) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result;
-      if (typeof result === 'string') {
-        setAgents(prev =>
-          prev.map(agent =>
-            agent.id === activeAgent.id
-              ? {
-                  ...agent,
-                  avatar: result,
-                  avatarKind: 'image',
-                }
-              : agent
-          )
-        );
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
   return (
     <div className="flex-1 flex overflow-hidden h-full min-h-0">
       <aside className="w-72 border-r border-border bg-bg-tertiary flex flex-col h-full">
-        <div className="p-3 border-b border-border">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <div className="text-xs uppercase tracking-wide text-text-tertiary">Workspace Chat</div>
-              <div className="text-sm font-semibold text-text-primary">Agents</div>
+        <div className="px-3 py-2 border-b border-border">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-1 bg-bg-elevated border border-border rounded-md px-3 py-1.5">
+              <MagnifyingGlass size={14} className="text-text-tertiary" />
+              <input
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none"
+                placeholder="Search agents"
+              />
             </div>
             <button
               onClick={handleNewAgent}
@@ -316,15 +265,6 @@ export default function ChatView() {
             >
               <Plus size={14} />
             </button>
-          </div>
-          <div className="flex items-center gap-2 bg-bg-elevated border border-border rounded-md px-3 py-1.5">
-            <MagnifyingGlass size={14} className="text-text-tertiary" />
-            <input
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none"
-              placeholder="Search agents"
-            />
           </div>
         </div>
 
@@ -419,79 +359,19 @@ export default function ChatView() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {isRouterActive ? (
-              <>
-                <button className="flex items-center gap-2 text-sm px-3 py-1.5 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary">
-                  <FunnelSimple size={14} />
-                  Routing rules
-                </button>
-                <button className="flex items-center gap-2 text-sm px-3 py-1.5 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary">
-                  <ClipboardText size={14} />
-                  Create task
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={startEditAgent}
-                  className="flex items-center gap-2 text-sm px-3 py-1.5 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary"
-                >
-                  <Pencil size={14} />
-                  Edit agent
-                </button>
-                <button className="flex items-center gap-2 text-sm px-3 py-1.5 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary">
-                  <Sparkle size={14} />
-                  Auto-brief
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-
-        {editingAgentId === activeAgentId && activeAgent && (
-          <div className="border-b border-border bg-bg-tertiary px-6 py-3 flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 bg-bg-elevated border border-border rounded-md px-3 py-2">
-              <input
-                value={nameDraft}
-                onChange={(event) => setNameDraft(event.target.value)}
-                className="bg-transparent text-xs text-text-primary focus:outline-none"
-                placeholder="Agent name"
-              />
+          {isRouterActive && (
+            <div className="flex items-center gap-2">
+              <button className="flex items-center gap-2 text-sm px-3 py-1.5 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary">
+                <FunnelSimple size={14} />
+                Routing rules
+              </button>
+              <button className="flex items-center gap-2 text-sm px-3 py-1.5 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary">
+                <ClipboardText size={14} />
+                Create task
+              </button>
             </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleAvatarUpload}
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 text-xs px-3 py-2 bg-bg-elevated border border-border rounded-md text-text-secondary hover:text-text-primary"
-            >
-              <Image size={14} />
-              Upload avatar
-            </button>
-            <button
-              type="button"
-              onClick={saveAgentEdits}
-              className="flex items-center gap-2 text-xs px-3 py-2 bg-brand text-white rounded-md"
-            >
-              <Check size={14} />
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={cancelEditAgent}
-              className="flex items-center gap-2 text-xs px-3 py-2 bg-bg-elevated border border-border rounded-md text-text-secondary hover:text-text-primary"
-            >
-              <X size={14} />
-              Cancel
-            </button>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="flex-1 flex min-h-0">
           <div className="flex-1 flex flex-col min-h-0">
@@ -532,128 +412,62 @@ export default function ChatView() {
 
             <div className="border-t border-border bg-bg-elevated px-6 py-4">
               <form
-                className="flex items-center gap-3"
+                className="flex flex-col gap-3"
                 onSubmit={(event) => {
                   event.preventDefault();
                   handleSend();
                 }}
               >
-                <div className="flex-1 bg-bg-tertiary border border-border rounded-md px-3 py-2">
-                  <textarea
-                    value={draft}
-                    onChange={(event) => setDraft(event.target.value)}
-                    placeholder={
-                      isRouterActive ? 'Describe the task you want to route...' : 'Message your agent...'
-                    }
-                    rows={1}
-                    className="w-full bg-transparent text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none resize-none"
-                  />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 bg-bg-tertiary border border-border rounded-md px-3 py-1.5">
+                    <span className="text-[10px] uppercase tracking-[0.18em] text-text-tertiary">
+                      Model
+                    </span>
+                    <select
+                      value={activeModel}
+                      onChange={(event) => setActiveModel(event.target.value)}
+                      className="bg-transparent text-xs text-text-primary focus:outline-none"
+                    >
+                      {modelOptions.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    type="button"
+                    className="p-2 rounded-md bg-bg-tertiary border border-border text-text-secondary hover:text-text-primary"
+                    aria-label="Add attachment"
+                  >
+                    <Paperclip size={16} />
+                  </button>
                 </div>
-                <button
-                  type="submit"
-                  className="px-3 py-2 bg-brand text-white text-xs rounded-md flex items-center gap-2 disabled:opacity-50"
-                  disabled={!draft.trim()}
-                >
-                  <PaperPlaneRight size={14} />
-                  Send
-                </button>
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 bg-bg-tertiary border border-border rounded-md px-3 py-3">
+                    <textarea
+                      value={draft}
+                      onChange={(event) => setDraft(event.target.value)}
+                      placeholder={
+                        isRouterActive ? 'Describe the task you want to route...' : 'Message your agent...'
+                      }
+                      rows={3}
+                      className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none resize-none"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="px-3 py-2.5 bg-brand text-white text-xs rounded-md flex items-center gap-2 disabled:opacity-50"
+                    disabled={!draft.trim()}
+                  >
+                    <PaperPlaneRight size={14} />
+                    Send
+                  </button>
+                </div>
               </form>
             </div>
           </div>
 
-          {isRouterActive && (
-            <aside className="w-80 border-l border-border bg-bg-secondary px-4 py-5 space-y-5 overflow-auto">
-              <div>
-                <div className="text-xs uppercase tracking-wide text-text-tertiary">Task Router</div>
-                <div className="text-sm font-semibold text-text-primary">Routing desk</div>
-              </div>
-
-              <div className="rounded-lg border border-border bg-bg-elevated p-3 text-xs space-y-2">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-text-tertiary">Routing basis</span>
-                  <span className="text-text-primary">Task type + availability</span>
-                </div>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-text-tertiary">Assignment mode</span>
-                  <span className="text-text-primary">Ask before assigning</span>
-                </div>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-text-tertiary">Scope</span>
-                  <span className="text-text-primary">Project-wide tasks</span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="text-xs uppercase tracking-wide text-text-tertiary">Suggested owners</div>
-                <div className="space-y-2">
-                  {agents
-                    .filter(agent => !agent.isRouter)
-                    .slice(0, 3)
-                    .map((agent, index) => {
-                      const matchLine =
-                        index === 0
-                          ? 'Best match for backend + testing'
-                          : index === 1
-                            ? 'Strong UI + documentation coverage'
-                            : 'Available for reviews + refactors';
-                      return (
-                        <div
-                          key={agent.id}
-                          className="rounded-md border border-border bg-bg-elevated px-3 py-2"
-                        >
-                          <div className="flex items-center gap-2">
-                            <Avatar
-                              src={agent.avatarKind === 'image' ? agent.avatar : undefined}
-                              alt={agent.name}
-                              fallback={agent.avatar}
-                              className="w-8 h-8 rounded-full"
-                              textClassName="text-xs"
-                              ring
-                              presence
-                              presenceStatus={agent.status}
-                            />
-                            <div className="flex-1 min-w-0">
-                              <div className="text-sm font-semibold text-text-primary truncate">
-                                {agent.name}
-                              </div>
-                              <div className="text-xs text-text-tertiary truncate">{matchLine}</div>
-                            </div>
-                            <button className="text-xs px-2.5 py-1 border border-border rounded-md text-text-secondary hover:text-text-primary">
-                              Request
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="text-xs uppercase tracking-wide text-text-tertiary">Draft new task</div>
-                <div className="rounded-lg border border-border bg-bg-elevated p-3 space-y-3 text-xs">
-                  <input
-                    className="w-full bg-bg-tertiary border border-border rounded-md px-3 py-2 text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none"
-                    placeholder="Task title"
-                  />
-                  <div className="flex items-center gap-2">
-                    <select className="flex-1 bg-bg-tertiary border border-border rounded-md px-3 py-2 text-xs text-text-primary focus:outline-none">
-                      <option>Task type</option>
-                      <option>Frontend</option>
-                      <option>Backend</option>
-                      <option>Testing</option>
-                      <option>Documentation</option>
-                    </select>
-                    <button className="px-3 py-2 bg-bg-tertiary border border-border rounded-md text-text-secondary hover:text-text-primary">
-                      Route
-                    </button>
-                  </div>
-                  <button className="w-full px-3 py-2 bg-brand text-white rounded-md text-xs">
-                    Ask router to propose owners
-                  </button>
-                </div>
-              </div>
-            </aside>
-          )}
         </div>
       </div>
     </div>

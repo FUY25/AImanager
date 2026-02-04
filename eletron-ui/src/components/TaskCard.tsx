@@ -6,6 +6,7 @@ interface TaskCardProps {
   task: Task;
   agent?: Agent;
   onClick?: () => void;
+  onAgentClick?: (agent: Agent) => void;
   accentClassName?: string;
   progressClassName?: string;
   avatarClassName?: string;
@@ -15,6 +16,7 @@ export default function TaskCard({
   task,
   agent,
   onClick,
+  onAgentClick,
   accentClassName,
   progressClassName = 'bg-brand',
   avatarClassName = 'w-8 h-8 rounded-full',
@@ -43,16 +45,26 @@ export default function TaskCard({
           #{task.id.split('-')[1]}
         </span>
         {agent && (
-          <Avatar
-            src={agent.avatar}
-            alt={agent.name}
-            fallback={agent.name[0]}
-            className={`${avatarClassName} shadow-[0_8px_16px_rgba(40,35,28,0.12)]`}
-            textClassName="text-sm"
-            ring
-            presence
-            presenceStatus={agent.status}
-          />
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onAgentClick?.(agent);
+            }}
+            className="rounded-full"
+            title="Open chat"
+          >
+            <Avatar
+              src={agent.avatar}
+              alt={agent.name}
+              fallback={agent.name[0]}
+              className={`${avatarClassName} shadow-[0_8px_16px_rgba(40,35,28,0.12)]`}
+              textClassName="text-sm"
+              ring
+              presence
+              presenceStatus={agent.status}
+            />
+          </button>
         )}
       </div>
 
